@@ -6,24 +6,29 @@
         <el-col :lg="16">
           <el-form :model="form" status-icon ref="form" label-width="100px" @submit.native.prevent>
             <el-form-item label="名称">
-              <el-input placeholder="请输入轮播图名称" size="medium" v-model="input"></el-input>
+              <el-input placeholder="请输入轮播图名称" size="medium" v-model="form.name"></el-input>
             </el-form-item>
             <el-form-item label="简介">
               <el-input
                 type="textarea"
                 placeholder="可选，轮播图简介"
                 :autosize="{ minRows: 4, maxRows: 4 }"
-                v-model="textarea"
+                v-model="form.desc"
               ></el-input>
             </el-form-item>
             <el-form-item>
               <div class="block-box">
-                <el-link type="primary" v-if="!list.length" @click="addContent"
-                  >添加
-                  <!-- <el-button size="medium" v-if="!list.length" @click="addContent">添加 -->
+                <el-link type="primary" v-if="!list.length" @click="addContent">
+                  添加
                   <i class="iconfont icon-jia plus"></i>
                 </el-link>
                 <el-row class="input-row" v-for="(item, index) in list" :key="index">
+                  <el-form-item>
+                    <el-link type="primary" v-if="list.length" @click="removeContent">
+                      轮播图{{ index + 1 }}
+                      <i class="iconfont icon-jian1 minus"></i>
+                    </el-link>
+                  </el-form-item>
                   <el-col :lg="12">
                     <el-form-item label="关键字">
                       <el-input
@@ -34,8 +39,10 @@
                       ></el-input>
                     </el-form-item>
                     <div class="function">
-                      <i class="iconfont icon-jian1 minus" @click="removeContent(index)"></i>
-                      <i class="iconfont icon-jia plus" v-if="index === list.length - 1" @click="addContent"></i>
+                      <el-link type="primary" v-if="index === list.length - 1" @click="addContent">
+                        添加
+                        <i class="iconfont icon-jia plus"></i>
+                      </el-link>
                     </div>
                   </el-col>
                 </el-row>
@@ -52,6 +59,10 @@ export default {
   data() {
     return {
       list: [],
+      form: {
+        name: '',
+        desc: '',
+      },
     }
   },
   methods: {
@@ -85,6 +96,11 @@ export default {
 
   .submit {
     float: left;
+  }
+  .icon-jian1 {
+    color: red;
+    size: 18px;
+    font-weight: bold;
   }
 }
 </style>

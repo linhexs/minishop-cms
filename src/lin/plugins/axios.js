@@ -255,15 +255,26 @@ export function put(url, data = {}, params = {}) {
 }
 
 /**
- * @param {string} url
- * @param {object} params
+ *
+ * @param {*} url
+ * @param {*} data
+ * @param {*} params
  */
-export function _delete(url, params = {}) {
+export function _delete(url, data = {}, params = {}) {
   return _axios({
     method: 'delete',
     url,
+    data,
     params,
   })
 }
+// export function _delete(url, data = {}, params = {}) {
+//   return _axios({
+//     method: 'delete',
+//     url,
+//     params,
+//     data,
+//   })
+// }
 
 export default _axios

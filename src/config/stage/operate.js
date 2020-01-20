@@ -14,8 +14,6 @@ const operateRouter = {
       name: null,
       title: '轮播图管理',
       type: 'folder', // 取 route 为默认加载页
-      icon: 'iconfont icon-huiyuanguanli',
-      filePath: 'views/admin/user/',
       inNav: true,
       children: [
         {
@@ -41,7 +39,7 @@ const operateRouter = {
       ],
     },
     {
-      route: '/admin/user/list',
+      route: '/operation/theme/list',
       name: null,
       title: '主题管理',
       type: 'folder', // 取 route 为默认加载页
@@ -52,9 +50,9 @@ const operateRouter = {
         {
           title: '主题列表',
           type: 'view',
-          name: 'userList',
-          route: '/admin/user/list',
-          filePath: 'views/admin/user/UserList.vue',
+          name: 'themeList',
+          route: '/operate/theme/list',
+          filePath: 'views/operate/theme/ThemeList.vue',
           inNav: true,
           icon: 'iconfont icon-huiyuanguanli',
           permission: ['超级管理员独有权限'],
@@ -63,10 +61,10 @@ const operateRouter = {
           title: '新增主题',
           type: 'view',
           inNav: true,
-          route: '/admin/user/add',
+          route: '/operate/theme/add',
           icon: 'iconfont icon-add',
-          name: 'userAdd',
-          filePath: 'views/admin/user/UserAdd.vue',
+          name: 'themeAdd',
+          filePath: 'views/operate/theme/ThemeAdd.vue',
           permission: ['超级管理员独有权限'],
         },
       ],

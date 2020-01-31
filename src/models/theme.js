@@ -1,4 +1,4 @@
-import { get, _delete } from '@/lin/plugins/axios'
+import { get, _delete, post, patch, put } from '@/lin/plugins/axios'
 
 class Theme {
   async getThemes() {

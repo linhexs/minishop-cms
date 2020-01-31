@@ -1,0 +1,30 @@
+const bookRouter = {
+  route: null,
+  name: null,
+  title: '商品管理',
+  type: 'folder', // 类型: folder, tab, view
+  icon: 'iconfont icon-tushuguanli',
+  filePath: 'views/book/', // 文件路径
+  order: null,
+  inNav: true,
+  children: [
+    {
+      title: '商品分类',
+      type: 'view',
+      name: 'categoryList',
+      route: '/category/list',
+      filePath: 'views/product/category/CategoryList.vue',
+      inNav: true,
+    },
+    {
+      title: '商品库',
+      type: 'view',
+      name: 'productsList',
+      route: '/products/list',
+      filePath: 'views/product/products/ProductList.vue',
+      inNav: true,
+    },
+  ],
+}
+
+export default bookRouter

@@ -1,4 +1,4 @@
-import { get, _delete, post } from '@/lin/plugins/axios'
+import { get, _delete, post, patch, put } from '@/lin/plugins/axios'
 
 class Banner {
   async getBanners() {

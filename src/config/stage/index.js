@@ -39,7 +39,7 @@ let homeRouter = [
   },
   operateConfig,
   productConfig,
-  // bookConfig,
+   bookConfig,
   adminConfig,
 ]
 

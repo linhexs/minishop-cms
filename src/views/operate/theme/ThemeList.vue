@@ -115,6 +115,7 @@ export default {
   }
   .table-container {
     margin-top: 30px;
+    margin-bottom: 30px;
     padding-left: 30px;
     padding-right: 30px;
     .expand-container {

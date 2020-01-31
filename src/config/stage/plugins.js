@@ -2,6 +2,9 @@
 import custom from '@/plugins/custom/stage-config'
 import LinCmsUi from '@/plugins/LinCmsUi/stage-config'
 
-const pluginsConfig = [custom, LinCmsUi]
+const pluginsConfig = [
+  custom,
+  LinCmsUi,
+]
 
 export default pluginsConfig

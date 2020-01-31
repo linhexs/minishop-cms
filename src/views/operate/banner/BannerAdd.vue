@@ -140,7 +140,8 @@ export default {
       const itemsLength = this.form.items.length - 1
       this.form.items[itemsLength].img_id = res.result.imgId
     },
-  },
+     
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -464,6 +464,7 @@ export default {
         data,
       })
         .then(res => {
+          this.$emit('func', res[0].path)
           if (!Array.isArray(res) || res.length === 0) {
             throw new Error('图像上传失败')
           }

@@ -32,8 +32,8 @@
     <el-dialog title="提示" :visible.sync="showDialog" width="30%" center>
       <span>确定删除id为{{ id }}的轮播图？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showDialog = false">取 消</el-button>
         <el-button type="primary" @click="deleteBanner">确 定</el-button>
+        <el-button @click="showDialog = false">取 消</el-button>
       </span>
     </el-dialog>
   </div>

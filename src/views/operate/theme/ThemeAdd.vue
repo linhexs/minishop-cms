@@ -25,34 +25,29 @@
           </el-form>
           <div class="product-title">关联商品</div>
           <div class="product-btn">
-            <el-button @click="addProduct">添加</el-button>
-            <el-button>删除</el-button>
+            <el-button @click="addProduct">选择关联商品</el-button>
           </div>
           <el-table
-            ref="multipleTable"
-            :data="tableData"
+            :data="productValue"
             tooltip-effect="dark"
             style="width: 100%"
-            @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column label="日期" width="120">
-              <template slot-scope="scope">{{ scope.row.date }}</template>
-            </el-table-column>
-            <el-table-column prop="name" label="姓名" width="120"></el-table-column>
-            <el-table-column prop="address" label="地址" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="name" label="姓名" width="200"></el-table-column>
+            <el-table-column prop="price" label="单价" width="200"></el-table-column>
+            <el-table-column prop="stock" label="商品库存" width="200"></el-table-column>
+            <el-table-column prop="summary" label="商品摘要" show-overflow-tooltip></el-table-column>
           </el-table>
           <el-dialog title="添加关联商品" :visible.sync="showDialog">
             <template>
               <el-transfer
                 filterable
                 :filter-method="filterMethod"
-                filter-placeholder="请输入城市名称"
-                v-model="value"
+                filter-placeholder="请输入商品名称"
+                v-model="productKey"
                 :data="productData"
               ></el-transfer>
               <span slot="footer" class="dialog-footer">
-                <el-button type="primary">确 定</el-button>
+                <el-button type="primary" @click="sendToProductTable">确 定</el-button>
                 <el-button @click="showDialog = false">取 消</el-button>
               </span>
             </template>
@@ -69,6 +64,7 @@
 <script>
 import UploadImgs from '@/components/base/upload-imgs'
 import banner from '../../../models/banner'
+import theme from '../../../models/theme'
 
 export default {
   components: {
@@ -76,35 +72,64 @@ export default {
   },
   data() {
     return {
-      list: [],
       showDialog: false,
-      productData: [],
-      product: ['shanghai', 'beijing'],
+      products:[], //全部可用的关联商品
+      productData: [], //transfer中渲染数据
+      productByName: [], //所有商品name
+      productByStatus: 0, //transfer渲染数据状态
+      productKey: [], //transfer选定的数据索引
+      productValue:[], //商品表格数据
       form: {
         name: '',
         description: '',
         topic_img_id: null,
         head_img_id: null,
       },
-      value: [],
       filterMethod(query, item) {
         return item.product.indexOf(query) > -1
       },
     }
   },
   methods: {
-    addProduct() {
+    /**
+     * 向transfer中添加商品逻辑
+     */
+    async addProduct() {
       this.showDialog = true
-      this.productData.push({
-        label: 'asdas',
-        key: 1,
-        product: this.product[0],
-      })
+      const resByProducts = await theme.getProducts()
+      this.products = resByProducts
+      if (this.productByStatus === 0) {
+        resByProducts.forEach((element, index) => {
+          this.productByName.push(element.name)
+          this.productData.push({
+            label: element.name,
+            key: index,
+            product: this.productByName[index],
+          })
+          this.productByStatus = 1
+        })
+      }
     },
+    /**
+     * 将数据渲染到表格上
+     */
+    sendToProductTable(){
+      this.productValue = []
+      this.productKey.forEach(index=>{
+        this.productValue.push(this.products[index])   
+      })
+      this.showDialog = false;
+    },
+    /**
+     * 获取head图片url
+     */
     async getHeadImgPath(path) {
       const res = await banner.addImage(path)
       this.form.head_img_id = res.result.imgId
     },
+    /**
+     * 获取topic图片url
+     */
     async getTopicImgPath(path) {
       const res = await banner.addImage(path)
       this.form.topic_img_id = res.result.imgId

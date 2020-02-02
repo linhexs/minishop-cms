@@ -3,7 +3,7 @@
   <div class="container">
     <div class="head">
       <div class="title">商品分类列表</div>
-      <el-button type="primary" @click="dialogFormVisible=true">新增分类</el-button>
+      <div class="title-btn"><el-button type="primary" @click="dialogFormVisible=true">新增分类</el-button></div>
     </div>
     <div class="table-container">
       <el-table v-loading="loading" :data="categoryList">
@@ -152,7 +152,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .container {
-  padding: 0 30px;
   .head {
     display: flex;
     justify-content: space-between;
@@ -165,6 +164,9 @@ export default {
       font-size: 16px;
       font-weight: 500;
       text-indent: 40px;
+    }
+    .title-btn{
+      padding-right:30px;
     }
   }
   .table-container {

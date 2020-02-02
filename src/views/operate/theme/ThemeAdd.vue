@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="title">新增轮播图</div>
+    <div class="title">新增主题</div>
     <div class="wrap">
       <el-row>
         <el-col :lg="16">
@@ -27,11 +27,7 @@
           <div class="product-btn">
             <el-button @click="addProduct">选择关联商品</el-button>
           </div>
-          <el-table
-            :data="productValue"
-            tooltip-effect="dark"
-            style="width: 100%"
-          >
+          <el-table :data="productValue" tooltip-effect="dark" style="width: 100%">
             <el-table-column prop="name" label="姓名" width="200"></el-table-column>
             <el-table-column prop="price" label="单价" width="200"></el-table-column>
             <el-table-column prop="stock" label="商品库存" width="200"></el-table-column>
@@ -40,6 +36,7 @@
           <el-dialog title="添加关联商品" :visible.sync="showDialog">
             <template>
               <el-transfer
+                v-loading="loading"
                 filterable
                 :filter-method="filterMethod"
                 filter-placeholder="请输入商品名称"
@@ -53,7 +50,7 @@
             </template>
           </el-dialog>
           <div class="save-theme-btn">
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="submitForm('form')">保存</el-button>
             <el-button>重置</el-button>
           </div>
         </el-col>
@@ -73,12 +70,13 @@ export default {
   data() {
     return {
       showDialog: false,
-      products:[], //全部可用的关联商品
+      loading: true,
+      products: [], //全部可用的关联商品
       productData: [], //transfer中渲染数据
       productByName: [], //所有商品name
       productByStatus: 0, //transfer渲染数据状态
       productKey: [], //transfer选定的数据索引
-      productValue:[], //商品表格数据
+      productValue: [], //商品表格数据
       form: {
         name: '',
         description: '',
@@ -106,6 +104,7 @@ export default {
             key: index,
             product: this.productByName[index],
           })
+          this.loading = false
           this.productByStatus = 1
         })
       }
@@ -113,12 +112,12 @@ export default {
     /**
      * 将数据渲染到表格上
      */
-    sendToProductTable(){
+    sendToProductTable() {
       this.productValue = []
-      this.productKey.forEach(index=>{
-        this.productValue.push(this.products[index])   
+      this.productKey.forEach(index => {
+        this.productValue.push(this.products[index])
       })
-      this.showDialog = false;
+      this.showDialog = false
     },
     /**
      * 获取head图片url
@@ -133,6 +132,28 @@ export default {
     async getTopicImgPath(path) {
       const res = await banner.addImage(path)
       this.form.topic_img_id = res.result.imgId
+    },
+    /**
+     * 提交表单
+     */
+    async submitForm(formName) {
+      try {
+        const res = await theme.addTheme(this.form)
+        var ids = []
+        this.productValue.forEach((value, key) => {
+          ids.push(value.id)
+        })
+        await theme.addRelProduct(1, { products: ids })
+        if (res.error_code === 0) {
+          this.$message.success(`${res.msg}`)
+          this.$router.push('/operate/theme/list')
+        }
+      } catch (e) {
+        this.$message({
+          message: e.data.msg,
+          type: 'error',
+        })
+      }
     },
   },
 }

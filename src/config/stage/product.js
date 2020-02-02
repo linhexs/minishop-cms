@@ -1,10 +1,10 @@
-const bookRouter = {
+const productRouter = {
   route: null,
   name: null,
   title: '商品管理',
   type: 'folder', // 类型: folder, tab, view
   icon: 'iconfont icon-tushuguanli',
-  filePath: 'views/book/', // 文件路径
+  filePath: 'views/product/', // 文件路径
   order: null,
   inNav: true,
   children: [
@@ -27,4 +27,4 @@ const bookRouter = {
   ],
 }
 
-export default bookRouter
+export default productRouter

@@ -22,9 +22,13 @@
           <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
             <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button plain size="mini" type="danger" @click="handleDel(scope.row.id)" v-auth="'删除轮播图'"
-              >删除</el-button
-            >
+            <el-button
+              plain
+              size="mini"
+              type="danger"
+              @click="handleDel(scope.row.id)"
+              v-auth="'删除轮播图'"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -95,17 +99,15 @@ export default {
 </script>
 <style lang="scss" scoped>
 .container {
-  padding: 0 30px;
   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     .title {
       height: 59px;
       line-height: 59px;
       color: $parent-title-color;
       font-size: 16px;
       font-weight: 500;
+      text-indent: 40px;
+      border-bottom: 1px solid #dae1ec;
     }
   }
   .table-container {

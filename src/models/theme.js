@@ -24,6 +24,22 @@ class Theme {
     const res = await get('v1/product')
     return res
   }
+  /**
+   * 添加主题
+   * @param {*} obj 
+   */
+  async addTheme(obj){
+    const res = await post('v1/theme',obj,{handleError: this.handleError})
+    return res
+  }
+  /**
+   * 添加关联商品
+   * @param {*} obj 
+   */
+  async addRelProduct(id,ids){
+    const res = await post(`v1/theme/product/${id}`,ids)
+    return res
+  }
 }
 
 export default new Theme()

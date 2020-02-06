@@ -21,7 +21,7 @@ const productRouter = {
       type: 'view',
       name: 'productsList',
       route: '/products/list',
-      filePath: 'views/product/products/ProductList.vue',
+      filePath: 'views/product/products/ProductsList.vue',
       inNav: true,
     },
   ],

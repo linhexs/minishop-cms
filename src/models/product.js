@@ -23,6 +23,13 @@ class Product {
       const res = await _delete('v1/category', { ids }, { handleError: this.handleError })
       return res
     }
+    /**
+     * 获取商品列表
+     */
+    async  getProducts(page,count) {
+      const res = await get('v1/product/paginate',{page,count})
+      return res
+    }
   }
   
 export default new Product()

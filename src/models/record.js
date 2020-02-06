@@ -9,7 +9,7 @@ class record {
       const res = await get(`v1/order/shipment/record?count=${count}&page=${page}&${select}=${input}`,{handleError:true})
       return res
     }else{
-      const res = await get('v1/order/shipment/record',{page:page,count:count},{handleError:true})
+      const res = await get('v1/order/shipment/record',{page,count},{handleError:true})
       return res
     }
   }

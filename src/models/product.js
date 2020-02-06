@@ -26,8 +26,23 @@ class Product {
     /**
      * 获取商品列表
      */
-    async  getProducts(page,count) {
-      const res = await get('v1/product/paginate',{page,count})
+    async getProducts(page,count,product_name='') {
+      const res = await get('v1/product/paginate',{page,count,product_name,handleError:true})
+      return res
+    }
+    /**
+     * 删除商品
+     * @param {*} ids 
+     */
+    async delProductById(ids){
+      const res = await _delete('v1/product', { ids }, { handleError: this.handleError })
+      return res
+    }
+    /**
+     * 修改商品状态
+     */
+    async modifyStatus(ids){
+      const res = await patch(`v1/product/${ids}`)
       return res
     }
   }

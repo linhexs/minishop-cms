@@ -255,6 +255,20 @@ export function put(url, data = {}, params = {}) {
 }
 
 /**
+ * @param {string} url
+ * @param {object} data
+ * @param {object} params
+ */
+export function patch(url, data = {}, params = {}) {
+  return _axios({
+    method: 'patch',
+    url,
+    params,
+    data,
+  })
+}
+
+/**
  *
  * @param {*} url
  * @param {*} data

@@ -3,7 +3,7 @@
   <div class="container">
     <div class="head">
       <div class="title">商品库</div>
-      <lin-search placeholder="请输入商品" />
+      <lin-search @query="onQueryChange" placeholder="请输入商品" />
       <div class="title-btn">
         <el-button type="primary">新增商品</el-button>
       </div>
@@ -27,7 +27,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="商品名称"  width="150" prop="name"></el-table-column>
+        <el-table-column label="商品名称" width="150" prop="name"></el-table-column>
         <el-table-column label="所属分类" width="150" prop="category_id"></el-table-column>
         <el-table-column label="商品单价" width="150" prop="price"></el-table-column>
         <el-table-column label="商品库存" width="150" prop="stock"></el-table-column>
@@ -46,9 +46,15 @@
               plain
               size="mini"
               type="warning"
-              @click="handleEdit(scope.row.id)"
+              @click="handleByProductStatus(scope.row.id)"
             >下架</el-button>
-            <el-button v-else plain size="mini" type="info" @click="handleEdit(scope.row.id)">上架</el-button>
+            <el-button
+              v-else
+              plain
+              size="mini"
+              type="success"
+              @click="handleByProductStatus(scope.row.id)"
+            >上架</el-button>
             <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button
               plain
@@ -62,20 +68,20 @@
       </el-table>
     </div>
     <el-dialog title="提示" :visible.sync="showDialog" width="30%" center>
-      <span>确定删除id为{{ id }}的轮播图？</span>
+      <span>确定删除id为{{ id }}的商品？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="deleteCategory">确 定</el-button>
+        <el-button type="primary" @click="deleteProduct">确 定</el-button>
         <el-button @click="showDialog = false">取 消</el-button>
       </span>
     </el-dialog>
     <div class="pagination" v-show="showPage">
       <el-pagination
-        background   
+        background
         @current-change="handleCurrentChange"
-        :current-page= page+1
-        :page-size= count
+        :current-page="page+1"
+        :page-size="count"
         layout="total, prev, pager, next, jumper"
-        :total= total_nums
+        :total="total_nums"
       ></el-pagination>
     </div>
   </div>
@@ -95,9 +101,10 @@ export default {
       loading: true,
       dialogFormVisible: false,
       page: 0,
-      total_nums:0,
+      total_nums: 0,
       count: 10,
-      showPage:true
+      searchKeyword: '',
+      showPage: true,
     }
   },
   async created() {
@@ -105,43 +112,83 @@ export default {
   },
   methods: {
     async getProducts() {
-      const productsList = await product.getProducts(this.page, this.count)
-      this.productsList = productsList.collection
-      this.total_nums = productsList.total_nums
-      this.loading = false
+      try {
+        const productsList = await product.getProducts(this.page, this.count, this.searchKeyword)
+        this.productsList = productsList.collection
+        this.total_nums = productsList.total_nums
+        this.showPage = true
+        this.loading = false
+      } catch (error) {
+        this.productsList = []
+        this.page = 0
+        this.total_nums = 0
+        this.showPage = false
+        this.loading = false
+        this.$message.error(`未查询到相关商品信息`)
+      }
     },
-      handleCurrentChange(val){
-          this.loading = true
-        this.page = --val
+    handleCurrentChange(val) {
+      this.loading = true
+      this.page = --val
+      this.getProducts()
+    },
+    handleDel(id) {
+      // 数据绑定，用于显示对话框内容
+      this.id = id
+      // 数据绑定，显示对话框
+      this.showDialog = true
+    },
+    // 执行删除商品请求
+    async deleteProduct() {
+      // 关闭对话框
+      this.showDialog = false
+      this.loading = true
+      try {
+        const res = await product.delProductById([this.id])
         this.getProducts()
+        this.$message({
+          message: res.msg,
+          type: 'success',
+        })
+      } catch (error) {
+        console.log(error)
+        this.loading = false
+        this.$message({
+          message: e.data.msg,
+          type: 'error',
+        })
+      }
     },
-    // handleDel(id) {
-    //   // 数据绑定，用于显示对话框内容
-    //   this.id = id
-    //   // 数据绑定，显示对话框
-    //   this.showDialog = true
-    // },
-    // // 执行删除分类请求
-    // async deleteCategory() {
-    //   // 关闭对话框
-    //   this.showDialog = false
-    //   this.loading = true
-    //   try {
-    //     const res = await product.delCategoryByIds([this.id])
-    //     this.getCategory()
-    //     this.loading = false
-    //     this.$message({
-    //       message: res.msg,
-    //       type: 'success',
-    //     })
-    //   } catch (e) {
-    //     this.loading = false
-    //     this.$message({
-    //       message: e.data.msg,
-    //       type: 'error',
-    //     })
-    //   }
-    // },
+    /**
+     * 修改商品状态
+     */
+    async handleByProductStatus(id) {
+      try {
+        const res = await product.modifyStatus(id)
+        this.loading = true
+        this.getProducts()
+        this.$message({
+          message: res.msg,
+          type: 'success',
+        })
+      } catch (e) {
+        this.loading = false
+        this.$message({
+          message: e.data.msg,
+          type: 'error',
+        })
+      }
+    },
+    /**
+     * 搜索
+     */
+    onQueryChange(query) {
+      this.loading = true
+      this.searchKeyword = query.trim()
+      setTimeout(() => {
+        this.getProducts()
+      }, 1000)
+    },
   },
 }
 </script>
@@ -173,9 +220,9 @@ export default {
       justify-content: flex-start;
       align-items: center;
       .img {
-       display: block;
+        display: block;
         height: auto;
-        width: 100%
+        width: 100%;
       }
     }
   }

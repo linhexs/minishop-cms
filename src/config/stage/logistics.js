@@ -1,23 +1,23 @@
-const logisticsRouter = {
+const Record = {
     route: null,
     name: null,
     title: '物流管理',
     type: 'folder', // 类型: folder, tab, view
-    icon: 'iconfont icon-tushuguanli',
+    icon: 'iconfont icon-wuliu',
     filePath: 'views/logistics/', // 文件路径
     order: null,
     inNav: true,
     children: [
       {
-        title: '发货记录',
+        title: '发货列表',
         type: 'view',
-        name: 'record',
-        route: '/logistics/record',
+        name: 'Record',
+        route: '/logistics/Record',
         filePath: 'views/logistics/Record.vue',
         inNav: true,
       },
     ],
   }
   
-  export default logisticsRouter
+  export default Record
   

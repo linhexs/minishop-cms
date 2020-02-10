@@ -1,8 +1,10 @@
 import adminConfig from './admin'
-import bookConfig from './book' // 引入图书管理路由文件
-import operateConfig from './operate' // 引入运营管理资源路由
+//import bookConfig from './book' // 引入图书管理路由文件
+import bannerConfig from './banner' // 引入banner资源路由
+import themeConfig from './theme' // 引入主题资源路由
 import productConfig from './product' // 引入商品管理资源路由
 import logisticsConfig from './logistics' // 引入物流管理路由
+import orderConfig from './order' // 引入物流管理路由
 import pluginsConfig from './plugins'
 import Utils from '@/lin/utils/util'
 
@@ -38,11 +40,13 @@ let homeRouter = [
     inNav: false,
     icon: 'iconfont icon-rizhiguanli',
   },
-  operateConfig,
-  productConfig,
-  logisticsConfig,
-  bookConfig,
   adminConfig,
+  bannerConfig,
+  themeConfig,
+  productConfig,
+  orderConfig,
+  logisticsConfig
+  //bookConfig,
 ]
 
 const plugins = [...pluginsConfig]

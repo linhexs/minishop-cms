@@ -45,7 +45,7 @@ export default {
       loading: true,
       recordList: [],
       page: 0,
-      count: 2,
+      count: 10,
       select: '',
       input: '',
       total_nums:0,

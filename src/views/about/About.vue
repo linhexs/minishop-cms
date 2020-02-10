@@ -3,9 +3,9 @@
     <div class="lin-info">
       <div class="lin-info-left">
         <div class="welcome">
-          <img src="../../assets/img/about/welcome.png" class="welcome-title" alt="" />
+          <div class="welcome-title"></div>
           <div class="subtitle">
-            <div class="guide">您还可以点击林间有风官方网站，查看更多作品</div>
+            <div class="guide"></div>
             <div class="link"><a href="http://www.7yue.pro" target="_blank">http://www.7yue.pro</a></div>
           </div>
         </div>

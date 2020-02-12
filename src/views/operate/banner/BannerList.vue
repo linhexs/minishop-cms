@@ -1,6 +1,6 @@
 <template>
   <!-- 列表页面 -->
-  <div class="container">
+  <div class="container" v-if="!showEdit">
     <div class="header">
       <div class="title">轮播图列表</div>
     </div>
@@ -33,30 +33,35 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="提示" :visible.sync="showDialog" width="30%" center>
-      <span>确定删除id为{{ id }}的轮播图？</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="deleteBanner">确 定</el-button>
-        <el-button @click="showDialog = false">取 消</el-button>
-      </span>
-    </el-dialog>
+    <delete-dialog
+      :showDialog="showDialog"
+      :id="id"
+      :text="deleteText"
+      @submit="deleteBanner"
+      @cancel="showDialog=false"
+    ></delete-dialog>
   </div>
+  <banner-edit v-else @editClose="editClose" :editBannerData="editBannerData"></banner-edit>
 </template>
 
 <script>
 import banner from '../../../models/banner'
-
+import DeleteDialog from '../../../components/base/delete-dialog/delete-dialog'
+import BannerEdit from './BannerEdit'
 export default {
-  // components: {
-  //   LinTable,
-  // },
+  components: {
+    DeleteDialog,
+    BannerEdit,
+  },
   data() {
     return {
       bannerList: [],
+      editBannerData: [],
       showDialog: false,
-      // 轮播图id
-      id: null,
+      id: null, // 轮播图id
+      deleteText: '轮播图',
       loading: true,
+      showEdit: false,
     }
   },
   async created() {
@@ -93,6 +98,14 @@ export default {
           type: 'error',
         })
       }
+    },
+    handleEdit(val) {
+      this.editBannerData = val
+      this.showEdit = true
+    },
+    editClose() {
+      this.showEdit = false
+      this.getBanners()
     },
   },
 }

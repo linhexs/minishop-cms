@@ -3,7 +3,7 @@ const productRouter = {
   name: null,
   title: '商品管理',
   type: 'folder', // 类型: folder, tab, view
-  icon: 'iconfont icon-tushuguanli',
+  icon: 'iconfont icon-shop',
   filePath: 'views/product/', // 文件路径
   order: null,
   inNav: true,

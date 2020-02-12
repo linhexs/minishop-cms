@@ -52,9 +52,6 @@
 import theme from '../../../models/theme'
 
 export default {
-  // components: {
-  //   LinTable,
-  // },
   data() {
     return {
       themeList: [],

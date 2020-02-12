@@ -192,7 +192,7 @@ export default {
         bottom: 0;
         right: 10px;
         width: 393px;
-        height: 121px;
+        height: 100px;
       }
     }
     .lin-info-right {

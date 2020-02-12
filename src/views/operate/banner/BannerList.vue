@@ -21,7 +21,7 @@
         <el-table-column label="操作" fixed="right" width="170">
           <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
-            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button plain size="mini" type="primary" ref="inputResult" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button
               plain
               size="mini"
@@ -41,7 +41,7 @@
       @cancel="showDialog=false"
     ></delete-dialog>
   </div>
-  <banner-edit v-else @editClose="editClose" :editBannerData="editBannerData"></banner-edit>
+  <banner-edit v-else @editClose="editClose" :editBannerData="editBannerData" @getBanner="getBannerItems"></banner-edit>
 </template>
 
 <script>
@@ -62,14 +62,22 @@ export default {
       deleteText: '轮播图',
       loading: true,
       showEdit: false,
+      // childId:null //子组件id
     }
   },
   async created() {
     this.getBanners()
   },
   methods: {
-    async getBanners() {
-      this.bannerList = await banner.getBanners()
+    async getBanners(id= '') {
+      const bannerList =await banner.getBanners()
+      console.log(bannerList)
+         bannerList.forEach(element => {
+          if(id===element.id){
+              this.handleEdit(element)
+          }
+        });
+      this.bannerList = bannerList
       this.loading = false
     },
     handleDel(id) {
@@ -98,6 +106,10 @@ export default {
           type: 'error',
         })
       }
+    },
+    async getBannerItems(id){
+       // this.childId = id
+        this.getBanners(id)
     },
     handleEdit(val) {
       this.editBannerData = val

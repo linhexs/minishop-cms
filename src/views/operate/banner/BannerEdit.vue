@@ -79,7 +79,7 @@
     ></delete-dialog>
     <!--新增Banner-Item-->
     <el-dialog title="新增Banner-Item" :visible.sync="dialogFormVisibleAdd">
-      <el-form label-width="100px" :model="form">
+      <el-form label-width="100px" :model="form" :rules="formRules">
         <el-form-item label="关键字" prop="key_word">
           <el-input v-model="formItem.key_word" autocomplete="off" placeholder="请填写关键字"></el-input>
         </el-form-item>
@@ -108,6 +108,37 @@
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
       </div>
     </el-dialog>
+    <!--修改Banner-Item-->
+     <el-dialog title="修改Banner-Item" :visible.sync="dialogFormVisibleEdit">
+      <el-form label-width="100px" :model="form">
+        <el-form-item label="关键字" prop="key_word">
+          <el-input v-model="editBannerItemData.key_word" autocomplete="off" placeholder="请填写关键字"></el-input>
+        </el-form-item>
+        <el-form-item label="导向类型" prop="itemType">
+          <el-select v-model="editBannerItemData.type" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="轮播图">
+          <upload-imgs
+            ref="uploadEle3"
+            :rules="rules"
+            :multiple="true"
+            :max-num="1"
+            @func="getImgPath"
+          />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+         <el-button type="primary" @click="editBannerItem">确 定</el-button>
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -130,10 +161,7 @@ export default {
      */
     editBannerData: {
       handler(newValue, oldValue) {
-        // console.log(newValue)
-        // console.log(oldValue)
         this.form.items = newValue.items
-        // console.log(this.form.items)
       },
       deep: true,
     },
@@ -145,17 +173,20 @@ export default {
       itemId: null,//bannerItem的id
       dialogFormVisibleAdd: false,//新增bannerItem
       dialogFormVisibleEdit: false,//修改bannerItem
+       //修改banner主体数据
       form: {
         name: this.editBannerData.name,
         description: this.editBannerData.description,
         items: this.editBannerData.items,
       },
+      //添加bannerItem数据
       formItem: {
         key_word:'',
         type:null,
         img_id:null,
         banner_id:this.editBannerData.id
       },
+      editBannerItemData:{},//修改bannerItem数据
       formRules: {
         trigger: ['blur', 'change'],
         required: true,
@@ -179,6 +210,22 @@ export default {
         minWidth: 100,
         minHeight: 100,
         maxSize: 1,
+      },
+       formRules: {
+        name: [
+          {
+            required: true,
+            message: '请输入轮播图名称',
+            trigger: 'blur',
+          },
+        ],
+        description: [
+          {
+            required: true,
+            message: '请输入轮播图简介',
+            trigger: 'blur',
+          },
+        ],
       },
     }
   },
@@ -266,8 +313,27 @@ export default {
           type: 'success',
         })
          this.$emit('getBanner', this.editBannerData.id)
-         this.formItem = {}
         this.dialogFormVisibleAdd = false
+      }catch(e){
+        console.log(e)
+         this.$message({
+          message:e.data.msg,
+          type: 'error',
+        })
+      }
+    },
+    /**
+     * 修改editBannerItem
+     */
+  async editBannerItem(){
+      try {
+        const res = await banner.editBannerItem(this.editBannerItemData)
+        this.$message({
+          message: res.msg,
+          type: 'success',
+        })
+         this.$emit('getBanner', this.editBannerData.id)
+        this.dialogFormVisibleEdit = false
       }catch (e) {
          this.$message({
           message: e.data.msg,
@@ -283,8 +349,14 @@ export default {
        this.formItem.img_id = res.result.imgId
     },
     handleEdit(val) {
-      this.editBannerItemData = val
-      this.showEdit = true
+      this.editBannerItemData = {
+        id:parseInt(val.id),
+        key_word:val.key_word,
+        type:val.type,
+        img_id:val.img_id
+      }
+      this.dialogFormVisibleEdit = true
+      this.editType =this.getTypeText(this.editBannerItemData.type)
     },
   },
 }

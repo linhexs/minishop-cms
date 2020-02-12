@@ -42,8 +42,20 @@ class Banner {
     const res = await _delete('v1/banner/item', { ids }, { handleError: true })
     return res
   }
+  /**
+   * 添加bannerItem
+   * @param {*} obj 
+   */
   async addBannerItem(obj){
-    const res = await post('v1/banner/item',{items:[obj]}, { handleError: true })
+    const res = await post('v1/banner/item',{items:[obj]},{ handleError: true })
+    return res
+  }
+  /**
+   * 修改bannerItem
+   * @param {*} obj 
+   */
+  async editBannerItem(obj){
+    const res = await put('v1/banner/item',{items:[obj]},{ handleError: true })
     return res
   }
 }

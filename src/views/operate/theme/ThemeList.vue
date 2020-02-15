@@ -1,6 +1,6 @@
 <template>
   <!-- 列表页面 -->
-  <div class="container">
+  <div class="container" v-if="!showEdit">
     <div class="header">
       <div class="title">主题列表</div>
     </div>
@@ -46,22 +46,28 @@
       </span>
     </el-dialog>
   </div>
+  <theme-edit v-else :id="id" @editClose="editClose"></theme-edit>
 </template>
 
 <script>
 import theme from '../../../models/theme'
-
+import ThemeEdit from './ThemeEdit'
 export default {
+  components: {
+    ThemeEdit,
+  },
   data() {
     return {
       themeList: [],
+      editThemeData: [],
       showDialog: false,
       // 轮播图id
       id: null,
       loading: true,
+      showEdit: false,
     }
   },
-  async created() {
+  async mounted() {
     this.getThemes()
   },
   methods: {
@@ -96,22 +102,20 @@ export default {
         })
       }
     },
+    handleEdit(val) {
+      this.showEdit = true
+      this.id = val.id
+    },
+    editClose() {
+      this.showEdit = false
+      this.getThemes()
+    },
   },
 }
 </script>
 <style lang="scss" scoped>
+@import './../../../assets/styles/title.scss';
 .container {
-  .header {
-    .title {
-      height: 59px;
-      line-height: 59px;
-      color: $parent-title-color;
-      font-size: 16px;
-      font-weight: 500;
-      text-indent: 40px;
-      border-bottom: 1px solid #dae1ec;
-    }
-  }
   .table-container {
     margin-top: 30px;
     margin-bottom: 30px;

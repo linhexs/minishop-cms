@@ -35,7 +35,7 @@
       <span>Banner-Item列表</span>
       <el-button type="primary" plain @click="dialogFormVisibleAdd=true">添加BannerItem</el-button>
     </div>
-     <!--Banner-Item表格-->
+    <!--Banner-Item表格-->
     <div class="table-container">
       <el-table :data="form.items">
         <el-table-column label="id" prop="id" width="120"></el-table-column>
@@ -69,7 +69,7 @@
         </el-table-column>
       </el-table>
     </div>
-     <!--删除Banner-Item-->
+    <!--删除Banner-Item-->
     <delete-dialog
       :showDialog="showDialog"
       :id="itemId"
@@ -104,12 +104,12 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-         <el-button type="primary" @click="addBannerItem">确 定</el-button>
+        <el-button type="primary" @click="addBannerItem">确 定</el-button>
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
       </div>
     </el-dialog>
     <!--修改Banner-Item-->
-     <el-dialog title="修改Banner-Item" :visible.sync="dialogFormVisibleEdit">
+    <el-dialog title="修改Banner-Item" :visible.sync="dialogFormVisibleEdit">
       <el-form label-width="100px" :model="form">
         <el-form-item label="关键字" prop="key_word">
           <el-input v-model="editBannerItemData.key_word" autocomplete="off" placeholder="请填写关键字"></el-input>
@@ -130,12 +130,13 @@
             :rules="rules"
             :multiple="true"
             :max-num="1"
+            :value="imgUrl"
             @func="getImgPath"
           />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-         <el-button type="primary" @click="editBannerItem">确 定</el-button>
+        <el-button type="primary" @click="editBannerItem">确 定</el-button>
         <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
       </div>
     </el-dialog>
@@ -144,6 +145,7 @@
 
 <script>
 import banner from '../../../models/banner'
+import error from '../../../common/error'
 import DeleteDialog from '../../../components/base/delete-dialog/delete-dialog'
 import img from '../../../models/img'
 import UploadImgs from '@/components/base/upload-imgs'
@@ -169,24 +171,25 @@ export default {
   data() {
     return {
       deleteText: 'Banner-Item',
-      showDialog: false,//删除框
-      itemId: null,//bannerItem的id
-      dialogFormVisibleAdd: false,//新增bannerItem
-      dialogFormVisibleEdit: false,//修改bannerItem
-       //修改banner主体数据
+      showDialog: false, //删除框
+      itemId: null, //bannerItem的id
+      dialogFormVisibleAdd: false, //新增bannerItem
+      dialogFormVisibleEdit: false, //修改bannerItem
+      //修改banner主体数据
       form: {
         name: this.editBannerData.name,
         description: this.editBannerData.description,
         items: this.editBannerData.items,
       },
+      imgUrl:[], //修改图片路径
       //添加bannerItem数据
       formItem: {
-        key_word:'',
-        type:null,
-        img_id:null,
-        banner_id:this.editBannerData.id
+        key_word: '',
+        type: null,
+        img_id: null,
+        banner_id: this.editBannerData.id,
       },
-      editBannerItemData:{},//修改bannerItem数据
+      editBannerItemData: {}, //修改bannerItem数据
       formRules: {
         trigger: ['blur', 'change'],
         required: true,
@@ -211,7 +214,7 @@ export default {
         minHeight: 100,
         maxSize: 1,
       },
-       formRules: {
+      formRules: {
         name: [
           {
             required: true,
@@ -272,9 +275,8 @@ export default {
       this.$emit('editClose')
     },
     resetForm(formName) {
-        this.form.name = ''
-        this.form.description = ''
-
+      this.form.name = ''
+      this.form.description = ''
     },
     handleDel(id) {
       // 数据绑定，用于显示对话框内容
@@ -305,19 +307,18 @@ export default {
     /**
      * 添加bannerItem
      */
-    async addBannerItem(){
+    async addBannerItem() {
       try {
         const res = await banner.addBannerItem(this.formItem)
         this.$message({
           message: res.msg,
           type: 'success',
         })
-         this.$emit('getBanner', this.editBannerData.id)
+        this.$emit('getBanner', this.editBannerData.id)
         this.dialogFormVisibleAdd = false
-      }catch(e){
-        console.log(e)
-         this.$message({
-          message:e.data.msg,
+      } catch (e) {
+        this.$message({
+          message: e.data.msg,
           type: 'error',
         })
       }
@@ -325,17 +326,17 @@ export default {
     /**
      * 修改editBannerItem
      */
-  async editBannerItem(){
+    async editBannerItem() {
       try {
         const res = await banner.editBannerItem(this.editBannerItemData)
         this.$message({
           message: res.msg,
           type: 'success',
         })
-         this.$emit('getBanner', this.editBannerData.id)
+        this.$emit('getBanner', this.editBannerData.id)
         this.dialogFormVisibleEdit = false
-      }catch (e) {
-         this.$message({
+      } catch (e) {
+        this.$message({
           message: e.data.msg,
           type: 'error',
         })
@@ -346,17 +347,27 @@ export default {
      */
     async getImgPath(path) {
       const res = await img.addImage(path)
-       this.formItem.img_id = res.result.imgId
+      this.formItem.img_id = res.result.imgId
+      this.editBannerItemData.img_id = res.result.imgId
     },
+    /**
+     * 点击编辑按钮
+     */
     handleEdit(val) {
+      this.imgUrl = [
+        {
+          id: val.img_id,
+          display: val.img.url,
+        },
+      ]
       this.editBannerItemData = {
-        id:parseInt(val.id),
-        key_word:val.key_word,
-        type:val.type,
-        img_id:val.img_id
+        id: parseInt(val.id),
+        key_word: val.key_word,
+        type: val.type,
+        img_id: val.img_id,
       }
       this.dialogFormVisibleEdit = true
-      this.editType =this.getTypeText(this.editBannerItemData.type)
+      this.editType = this.getTypeText(this.editBannerItemData.type)
     },
   },
 }

@@ -20,7 +20,7 @@
           <div><el-button @click="getValue('uploadEle5')">获取当前图像数据</el-button></div>
         </el-form-item>
         <el-form-item label="带初始化, 限制4至7张">
-          <upload-imgs ref="uploadEle1" :value="initData" :rules="rules" :multiple="true" :max-num="7" :min-num="4" />
+          <upload-imgs ref="uploadEle1" :value="initData" :rules="rules" :multiple="true" :max-num="1"/>
           <div><el-button @click="getValue('uploadEle1')">获取当前图像数据</el-button></div>
         </el-form-item>
         <el-form-item label="初始化, 可多选, 不立即上传">
@@ -145,18 +145,6 @@ export default {
           src:
             'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
           imgId: '12381900',
-        },
-        {
-          id: '12d3',
-          display: 'http://img-home.7yue.pro/images/index/Lin_cms_%E5%B0%81%E9%9D%A2.png',
-          src: '/images/index/Lin_cms_%E5%B0%81%E9%9D%A2.png',
-          imgId: '238287',
-        },
-        {
-          id: 'hahah',
-          display: 'http://img-home.7yue.pro/images/index/Lin_UI_%E5%B0%81%E9%9D%A2.png',
-          src: '/images/index/Lin_UI_%E5%B0%81%E9%9D%A2.png',
-          imgId: '1232323',
         },
       ],
     }

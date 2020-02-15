@@ -29,7 +29,7 @@ class Theme {
    * @param {*} obj 
    */
   async addTheme(obj){
-    const res = await post('v1/theme',obj,{handleError: this.handleError})
+    const res = await post('v1/theme',obj,{handleError: true})
     return res
   }
   /**
@@ -38,6 +38,22 @@ class Theme {
    */
   async addRelProduct(id,ids){
     const res = await post(`v1/theme/product/${id}`,ids)
+    return res
+  }
+  /**
+   * 更新主题主体信息
+   */
+  async editTheme(id,ids){
+    const res = await patch(`v1/theme/${id}`,ids,{handleError: true})
+    return res
+  }
+  /**
+   * 获取主体信息
+   * @param {]} id 
+   * @param {*} ids 
+   */
+  async getThemeById(id,ids){
+    const res = await get(`v1/theme/${id}`)
     return res
   }
 }

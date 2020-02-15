@@ -71,7 +71,6 @@ export default {
   methods: {
     async getBanners(id= '') {
       const bannerList =await banner.getBanners()
-      console.log(bannerList)
          bannerList.forEach(element => {
           if(id===element.id){
               this.handleEdit(element)

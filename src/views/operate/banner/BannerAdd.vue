@@ -79,6 +79,7 @@
 import UploadImgs from '@/components/base/upload-imgs'
 import banner from '../../../models/banner'
 import img from '../../../models/img'
+import error from '../../../common/error'
 
 export default {
   components: {
@@ -86,12 +87,14 @@ export default {
   },
   data() {
     return {
-      list: [],
       form: {
         name: '',
         description: '',
         items: [],
       },
+      /**
+       * select类型
+       */
       options: [
         {
           value: 0,
@@ -106,11 +109,17 @@ export default {
           label: '导向专题',
         },
       ],
+      /**
+       * 图片规则
+       */
       rules: {
         minWidth: 100,
         minHeight: 100,
         maxSize: 5,
       },
+      /**
+       * 验证表单
+       */
       formRules: {
         name: [
           {
@@ -130,6 +139,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * 添加item
+     */
     addContent() {
       this.form.items.push({
         key_word: '',
@@ -137,9 +149,15 @@ export default {
         img_id: null,
       })
     },
+    /**
+     * 减少item
+     */
     removeContent(index) {
       this.form.items.splice(index, 1)
     },
+    /**
+     * 提交到服务器
+     */
     async submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
@@ -151,7 +169,7 @@ export default {
             }
           } catch (e) {
             this.$message({
-              message: e.data.msg,
+              message: error(e.data.msg),
               type: 'error',
             })
           }
@@ -163,10 +181,16 @@ export default {
         }
       })
     },
+    /***
+     * 重置表单
+     */
     resetForm(formName) {
       this.$refs[formName].resetFields()
       this.form.items = []
     },
+    /**
+     * 获取上传图片id
+     */
     async getImgPath(path) {
       const res = await img.addImage(path)
       const itemsLength = this.form.items.length - 1

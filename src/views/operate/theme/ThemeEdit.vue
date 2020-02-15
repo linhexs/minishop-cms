@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <div class="title">新增主题</div>
+    <div class="title">
+      <span>编辑主题</span>
+      <span class="back" @click="back">
+        <i class="iconfont icon-fanhui"></i> 返回
+      </span>
+    </div>
     <div class="wrap">
       <el-row>
         <el-col :lg="16">
@@ -17,10 +22,23 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="主题图">
-              <upload-imgs ref="uploadEle3" :multiple="true" :max-num="1" @func="getTopicImgPath" />
+              <upload-imgs
+                ref="uploadEle3"
+                @func="getHeadImgPath"
+                :multiple="true"
+                :max-num="1"
+                :value="topic_img"
+              />
             </el-form-item>
+
             <el-form-item label="详情页头图">
-              <upload-imgs ref="uploadEle3" :multiple="true" :max-num="1" @func="getHeadImgPath" />
+              <upload-imgs
+                ref="uploadEle3"
+                @func="getTopicImgPath"
+                :multiple="true"
+                :max-num="1"
+                :value="head_img"
+              />
             </el-form-item>
           </el-form>
           <div class="product-title">关联商品</div>
@@ -69,28 +87,62 @@ export default {
   components: {
     UploadImgs,
   },
+  props: {
+    id: Number,
+  },
+  mounted() {
+    this.getIninData(this.id)
+  },
   data() {
     return {
       showDialog: false,
+      topic_img: [],//话题图片
+      themeId: null,//主题id
       loading: true,
+      head_img: [],//头图
       products: [], //全部可用的关联商品
       productData: [], //transfer中渲染数据
       productByName: [], //所有商品name
       productByStatus: 0, //transfer渲染数据状态
       productKey: [], //transfer选定的数据索引
       productValue: [], //商品表格数据
-      form: {
-        name: '',
-        description: '',
-        topic_img_id: null,
-        head_img_id: null,
-      },
+      form: {},
       filterMethod(query, item) {
         return item.product.indexOf(query) > -1
       },
     }
   },
   methods: {
+    /**
+     * 获取初始化数据
+     */
+    async getIninData(id) {
+      const res = await theme.getThemeById(id)
+      this.form = {
+        name: res.name,
+        description: res.description,
+        topic_img_id: res.topic_img.id,
+        head_img_id: res.head_img.id,
+      }
+      this.topic_img = [
+        {
+          id: res.topic_img.id,
+          display: res.topic_img.url,
+        },
+      ]
+      this.head_img = [
+        {
+          id: res.head_img.id,
+          display: res.head_img.url,
+        },
+      ]
+      const ids = []
+      res.products.map(item=>{
+       ids.push(item.id)
+      })
+      this.productKey= ids
+      this.productValue = res.products
+    },
     /**
      * 向transfer中添加商品逻辑
      */
@@ -103,7 +155,7 @@ export default {
           this.productByName.push(element.name)
           this.productData.push({
             label: element.name,
-            key: index,
+            key: element.id,
             product: this.productByName[index],
           })
           this.loading = false
@@ -115,10 +167,16 @@ export default {
      * 将数据渲染到表格上
      */
     sendToProductTable() {
-      this.productValue = []
-      this.productKey.forEach(index => {
-        this.productValue.push(this.products[index])
+      const products =  this.products
+      const productKey = this.productKey
+      const productTable = []
+      products.forEach(item=>{
+        const val = productKey.includes(item.id)
+        if(val){
+            productTable.push(item)
+        }
       })
+      this.productValue = productTable
       this.showDialog = false
     },
     /**
@@ -140,15 +198,10 @@ export default {
      */
     async submitForm(formName) {
       try {
-        const res = await theme.addTheme(this.form)
-        var ids = []
-        this.productValue.forEach((value, key) => {
-          ids.push(value.id)
-        })
+        const res = await theme.editTheme(this.id, this.form)
         if (res.error_code === 0) {
-          await theme.addRelProduct(res.result.id, { products: ids })
           this.$message.success(`${res.msg}`)
-          this.$router.push('/theme/list')
+          this.back()
         }
       } catch (e) {
         this.$message({
@@ -157,7 +210,10 @@ export default {
         })
       }
     },
-  },
+    back() {
+      this.$emit('editClose')
+    },
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -177,6 +233,7 @@ export default {
       text-align: center;
     }
   }
+
   .submit {
     float: left;
   }

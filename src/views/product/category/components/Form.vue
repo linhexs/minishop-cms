@@ -47,8 +47,7 @@ export default {
   created() {
     //如果有传入props就覆盖form，没有就保持原来的form，对应新增和编辑的场景
     this.form = this.data || this.form
-    // console.log(this.data !== undefined)
-    // 存在轮播图元素，初始化轮播图元素的图片组件
+    // 存在图片元素，初始图片元素组件
     if (this.data !== undefined) {
       this.initImage()
     }

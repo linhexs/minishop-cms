@@ -1,7 +1,6 @@
 <template>
   <el-dialog :title="formTitle" :visible.sync="visible" :before-close="modalClose">
     <control-form :data="formData" @submit="editCategory"></control-form>
-    <!-- <control-form></control-form> -->
   </el-dialog>
 </template>
 <script>

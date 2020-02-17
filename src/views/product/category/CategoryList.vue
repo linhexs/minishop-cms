@@ -20,20 +20,12 @@
               size="mini"
               type="danger"
               @click="handleDel(scope.row.id)"
-              v-auth="'删除轮播图'"
+              v-auth="'删除分类'"
             >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <!-- <el-dialog title="提示" :visible.sync="showDelDialog" width="30%" center>
-      <span>确定删除id为{{ id }}的分类？</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="deleteCategory">确 定</el-button>
-        <el-button @click="showDelDialog = false">取 消</el-button>
-      </span>
-    </el-dialog> -->
-
       <delete-dialog
       :showDialog="showDelDialog"
       :id="id"
@@ -45,7 +37,6 @@
     <category-edit  v-if="hackEdit"  :editData="editData" @getCategory="getCategory"  :visible.sync="editVisible"></category-edit>
   </div>
 </template>
-
 <script>
 import DeleteDialog from '../../../components/base/delete-dialog/delete-dialog'
 import product from '../../../models/product'
@@ -65,7 +56,6 @@ export default {
     return {
       categoryList: [],
       showDelDialog: false, //删除弹框
-      showFormDialog: false, //表单弹框
       loading: true,
       id:null,//删除商品id
       hackEdit: false,
@@ -84,19 +74,10 @@ export default {
      * 修改分类信息
      */
     handleEdit(val) {
-      //this.getTimer1(),
       this.hackEdit = true
       this.editData = val
       this.editVisible = true;
     },
-    // getTimer1(){
-    //   console.log(new Date().getMonth())
-    //     this.timer1 = new Date().getMonth()
-    // },
-    //  getTimer2(){
-    //    console.log(new Date().getTime())
-    //     this.timer2 = new Date().getTime()
-    // },
     /**
      * 增加分类表单
      */
@@ -123,7 +104,6 @@ export default {
     /**
      * 执行删除分类请求
      */
-
     async deleteCategory() {
       this.showDelDialog = false
       this.loading = true
@@ -140,30 +120,7 @@ export default {
           type: 'error',
         })
       }
-    },
-    /**
-     * 添加分类
-     */
-    async addCategory(val) {
-      try {
-        const res = await product.addCategory(val)
-        this.getCategory()
-        this.$message({
-          message: res.msg,
-          type: 'success',
-        })
-        this.showFormDialog = false
-        this.hackReset = false
-        this.$nextTick(() => {
-          this.hackReset = true
-        })
-      } catch (e) {
-        this.$message({
-          message: error(e.data.msg),
-          type: 'error',
-        })
-      }
-    },
+    }
   }
 }
 </script>

@@ -3,7 +3,9 @@
   <div class="container">
     <div class="head">
       <div class="title">商品分类列表</div>
-      <div class="title-btn"><el-button type="primary" @click="dialogFormVisible=true">新增分类</el-button></div>
+      <div class="title-btn">
+        <el-button type="primary" @click="handleAdd">新增分类</el-button>
+      </div>
     </div>
     <div class="table-container">
       <el-table v-loading="loading" :data="categoryList">
@@ -11,7 +13,6 @@
         <el-table-column label="分类名称" prop="name"></el-table-column>
         <el-table-column label="分类描述" prop="description"></el-table-column>
         <el-table-column label="操作" fixed="right" width="170">
-          <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
             <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button
@@ -25,129 +26,145 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="提示" :visible.sync="showDialog" width="30%" center>
+    <!-- <el-dialog title="提示" :visible.sync="showDelDialog" width="30%" center>
       <span>确定删除id为{{ id }}的分类？</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="deleteCategory">确 定</el-button>
-        <el-button @click="showDialog = false">取 消</el-button>
+        <el-button @click="showDelDialog = false">取 消</el-button>
       </span>
-    </el-dialog>
-      <el-dialog title="新增分类" :visible.sync="dialogFormVisible">
-        <el-form label-width="100px" :model="form">
-          <el-form-item label="分类名称">
-            <el-input v-model="form.name" autocomplete="off" placeholder="请填写分类名称"></el-input>
-          </el-form-item>
-          <el-form-item label="简介">
-            <el-input
-              size="medium"
-              type="textarea"
-              :autosize="{ minRows: 4, maxRows: 8 }"
-              placeholder="请输入简介"
-              v-model="form.description"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="分类图片">
-            <upload-imgs
-              ref="uploadEle3"
-              :rules="rules"
-              :multiple="true"
-              :max-num="1"
-              @func="getImgPath"
-            />
-          </el-form-item>
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addCategory">确 定</el-button>
-        </div>
-      </el-dialog>
+    </el-dialog> -->
+
+      <delete-dialog
+      :showDialog="showDelDialog"
+      :id="id"
+      :text="deleteText"
+      @submit="deleteCategory"
+      @cancel="showDelDialog=false"
+    ></delete-dialog>
+    <category-add v-if="hackAdd"  @getCategory="getCategory"  :visible.sync="addVisible"></category-add>
+    <category-edit  v-if="hackEdit"  :editData="editData" @getCategory="getCategory"  :visible.sync="editVisible"></category-edit>
   </div>
 </template>
 
 <script>
-import UploadImgs from '@/components/base/upload-imgs'
+import DeleteDialog from '../../../components/base/delete-dialog/delete-dialog'
 import product from '../../../models/product'
+import error from '../../../common/error'
 import banner from '../../../models/banner'
-
+import ControlForm from './components/Form'
+import CategoryAdd from './CategoryAdd'
+import CategoryEdit from './CategoryEdit'
 export default {
   components: {
-    UploadImgs,
+    ControlForm,
+    CategoryAdd,
+    CategoryEdit,
+    DeleteDialog
   },
   data() {
     return {
       categoryList: [],
-      showDialog: false,
-      // 轮播图id
-      id: null,
+      showDelDialog: false, //删除弹框
+      showFormDialog: false, //表单弹框
       loading: true,
-      dialogFormVisible: false,
-      form: {
-        name: '',
-        description: '',
-        topic_img_id: null,
-      },
+      id:null,//删除商品id
+      hackEdit: false,
+      hackAdd:false,
+      editData: {},
+      deleteText:'分类',
+      addVisible:false,
+      editVisible:false
     }
   },
   async created() {
     this.getCategory()
   },
   methods: {
+    /**
+     * 修改分类信息
+     */
+    handleEdit(val) {
+      //this.getTimer1(),
+      this.hackEdit = true
+      this.editData = val
+      this.editVisible = true;
+    },
+    // getTimer1(){
+    //   console.log(new Date().getMonth())
+    //     this.timer1 = new Date().getMonth()
+    // },
+    //  getTimer2(){
+    //    console.log(new Date().getTime())
+    //     this.timer2 = new Date().getTime()
+    // },
+    /**
+     * 增加分类表单
+     */
+    handleAdd() {
+      this.hackAdd = true
+       this.addVisible = true;
+    },
+    /**
+     * 获取分类列表
+     */
     async getCategory() {
       this.categoryList = await product.getCategory()
       this.loading = false
+      this.hackEdit = false
+      this.hackAdd = false
     },
+    /**
+     * 显示删除对话框
+     */
     handleDel(id) {
-      // 数据绑定，用于显示对话框内容
       this.id = id
-      // 数据绑定，显示对话框
-      this.showDialog = true
+      this.showDelDialog = true
     },
-    // 执行删除分类请求
+    /**
+     * 执行删除分类请求
+     */
+
     async deleteCategory() {
-      // 关闭对话框
-      this.showDialog = false
+      this.showDelDialog = false
       this.loading = true
       try {
         const res = await product.delCategoryByIds([this.id])
         this.getCategory()
-        this.loading = false
-        this.$message({
-          message: res.msg,
-          type: 'success',
-        })
-      } catch (e) {
-        this.loading = false
-        this.$message({
-          message: e.data.msg,
-          type: 'error',
-        })
-      }
-    },
-    async addCategory() {
-      try {
-        const res = await product.addCategory(this.form)
-        this.getCategory()
-        this.loading = false
-        this.dialogFormVisible = false
         this.$message({
           message: res.msg,
           type: 'success',
         })
       } catch (e) {
         this.$message({
-          message: e.data.msg,
+          message: error(e.data.msg),
           type: 'error',
         })
       }
     },
     /**
-     * 获取图片id
+     * 添加分类
      */
-    async getImgPath(path) {
-      const res = await banner.addImage(path)
-      this.form.topic_img_id = res.result.imgId
+    async addCategory(val) {
+      try {
+        const res = await product.addCategory(val)
+        this.getCategory()
+        this.$message({
+          message: res.msg,
+          type: 'success',
+        })
+        this.showFormDialog = false
+        this.hackReset = false
+        this.$nextTick(() => {
+          this.hackReset = true
+        })
+      } catch (e) {
+        this.$message({
+          message: error(e.data.msg),
+          type: 'error',
+        })
+      }
     },
-  },
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -165,8 +182,8 @@ export default {
       font-weight: 500;
       text-indent: 40px;
     }
-    .title-btn{
-      padding-right:30px;
+    .title-btn {
+      padding-right: 30px;
     }
   }
   .table-container {

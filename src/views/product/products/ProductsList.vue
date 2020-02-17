@@ -164,8 +164,8 @@ export default {
      */
     async handleByProductStatus(id) {
       try {
-        const res = await product.modifyStatus(id)
         this.loading = true
+        const res = await product.modifyStatus(id)
         this.getProducts()
         this.$message({
           message: res.msg,

@@ -162,7 +162,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import './../../../assets/styles/title.scss';
+@import './../../../assets/styles/realize/mixin.scss';
 .container {
+  .title{
+    @include bottom-line()
+  }
   .wrap {
     padding: 20px;
     .product-title {

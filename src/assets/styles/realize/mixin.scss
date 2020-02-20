@@ -50,3 +50,6 @@
     opacity: $opacity;
   }
 }
+@mixin bottom-line(){
+  border-bottom: 1px solid #dae1ec;
+}

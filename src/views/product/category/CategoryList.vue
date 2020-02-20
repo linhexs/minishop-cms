@@ -42,12 +42,10 @@ import DeleteDialog from '../../../components/base/delete-dialog/delete-dialog'
 import product from '../../../models/product'
 import error from '../../../common/error'
 import banner from '../../../models/banner'
-import ControlForm from './components/Form'
 import CategoryAdd from './CategoryAdd'
 import CategoryEdit from './CategoryEdit'
 export default {
   components: {
-    ControlForm,
     CategoryAdd,
     CategoryEdit,
     DeleteDialog
@@ -125,20 +123,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import './../../../assets/styles/title.scss';
 .container {
   .head {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #dae1ec;
-    .title {
-      height: 59px;
-      line-height: 59px;
-      color: $parent-title-color;
-      font-size: 16px;
-      font-weight: 500;
-      text-indent: 40px;
-    }
     .title-btn {
       padding-right: 30px;
     }

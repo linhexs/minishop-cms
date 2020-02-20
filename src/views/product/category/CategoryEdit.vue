@@ -18,7 +18,7 @@ export default {
       default: false,
     },
   },
-  mounted() {
+  created() {
     this.formData = this.editData
     console.log('我edit初始化了')
   },

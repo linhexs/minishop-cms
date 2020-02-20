@@ -245,7 +245,7 @@ export default {
         }
       } catch (e) {
         this.$message({
-          message: e.data.msg,
+          message: error(e.data.msg),
           type: 'error',
         })
       }
@@ -299,7 +299,7 @@ export default {
         })
       } catch (e) {
         this.$message({
-          message: e.data.msg,
+          message:error(e.data.msg),
           type: 'error',
         })
       }
@@ -318,7 +318,7 @@ export default {
         this.dialogFormVisibleAdd = false
       } catch (e) {
         this.$message({
-          message: e.data.msg,
+          message: error(e.data.msg),
           type: 'error',
         })
       }
@@ -337,7 +337,7 @@ export default {
         this.dialogFormVisibleEdit = false
       } catch (e) {
         this.$message({
-          message: e.data.msg,
+          message: error(e.data.msg),
           type: 'error',
         })
       }

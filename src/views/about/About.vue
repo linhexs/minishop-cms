@@ -57,7 +57,7 @@
         </div>
       </div>
     </div>
-    <div class="quantity-statistics">
+    <!-- <div class="quantity-statistics">
       <div class="quantity-item">
         <div class="quantity-detail">
           <div class="quantity-detail-box">
@@ -106,25 +106,46 @@
           <img src="../../assets/img/about/icon.png" alt />
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="information">
       <div class="personal">
-        占位
-      </div>
-      <div class="article">
-        <div class="article-title">文章</div>
+        <div class="el-card__header">
+          <span>最近一个月交易趋势</span>
+        </div>
+        <div class="el-card__body">
+          <ve-line :data="chartData" :settings="chartSettings" :colors="colors"></ve-line>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import about from './../../models/about'
+import {nowDate,lastMonthDate} from './../../common/date'
 export default {
   data() {
+    this.chartSettings = {
+        labelMap: {
+          'count': '订单量',
+          'total_price': '订单额'
+        },
+    }
+    this.colors = ['#c23531','#2f4554', '#61a0a8',
+        '#d48265', '#91c7ae','#749f83', 
+        '#ca8622', '#bda29a','#6e7074',
+        '#546570', '#c4ccd3']
     return {
       activeName: 'first',
       showTeam: false,
+      chartData: {
+          columns: ['date', 'count', 'total_price'],
+          rows:[]
+        }
     }
+  },
+  created(){
+    this.getData()
   },
   mounted() {
     if (document.body.clientWidth > 1200 && document.body.clientWidth < 1330) {
@@ -135,6 +156,17 @@ export default {
     handleArticle(link) {
       window.open(link)
     },
+    async getData(){
+      const nDate = nowDate()
+      const lDate = lastMonthDate()
+      const obj = {
+        start:lDate,
+        end:nDate,
+        type:'day'
+      }
+      const res = await about.getData(obj)
+      this.chartData.rows =  res.slice(1,32)
+    }
   },
 }
 </script>
@@ -355,23 +387,31 @@ export default {
     margin-top: 20px;
     display: flex;
     .personal {
-      width: 320px;
+      flex: 1;
+      // width: 500px;
       height: 100%;
-      margin-right: 20px;
       background: rgba(255, 255, 255, 1);
       box-shadow: 0px 2px 14px 0px rgba(243, 243, 243, 1);
       border-radius: 8px;
+      .el-card__header {
+        height: 50px;
+        border-bottom: 1px solid #ebeef5;
+      }
+      .el-card__body {
+        box-sizing: border-box;
+        padding-top: 20px;
       }
     }
-    .article {
-      flex: 1;
-      height: 100%;
-      padding: 20px;
-      background: rgba(255, 255, 255, 1);
-      box-shadow: 0px 2px 14px 0px rgba(243, 243, 243, 1);
-      border-radius: 8px;
-    }
   }
+  .article {
+    flex: 1;
+    height: 100%;
+    padding: 20px;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px 2px 14px 0px rgba(243, 243, 243, 1);
+    border-radius: 8px;
+  }
+}
 @media screen and (max-width: 1200px) {
   .container .lin-info .lin-info-right {
     display: none;
@@ -379,15 +419,15 @@ export default {
   .container .lin-info .lin-info-left {
     width: 100%;
   }
-  .container .quantity-statistics .quantity-item {
+  .container .information .quantity-statistics .quantity-item {
     width: 32%;
     &:last-child {
       display: none;
     }
   }
-  .container .information .personal {
-    display: none;
-  }
+  // .container .information .personal {
+  //   display: none;
+  // }
 }
 
 @media screen and (max-width: 1200px) {

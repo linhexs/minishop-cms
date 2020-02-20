@@ -20,12 +20,14 @@ import '@/assets/styles/index.scss' // eslint-disable-line
 import '@/assets/styles/realize/element-variables.scss'
 import 'element-ui/lib/theme-chalk/display.css'
 
+import VeLine from 'v-charts/lib/line.common' //v-chart
+
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
 
 Vue.component(CollapseTransition.name, CollapseTransition)
-
+Vue.component(VeLine.name, VeLine) //v-chart
 // base 组件注册
 Vue.component('sticky-top', StickyTop)
 Vue.component('l-icon', LIcon)

@@ -24,13 +24,13 @@ export default {
   },
   data() {
     return {
-      //showFormDialog: true,
       formTitle: '修改分类信息',
       formData: {},
     }
   },
   methods: {
     modalClose() {
+      this.handleClose(),
       this.$emit('update:visible', false) // 直接修改父组件的属性
     },
     async editCategory(val) {
@@ -41,7 +41,7 @@ export default {
           message: res.msg,
           type: 'success',
         })
-        this.$emit('getCategory')
+       this.handleClose()
       } catch (e) {
         this.$message({
           message: error(e.data.msg),
@@ -49,7 +49,10 @@ export default {
         })
       }
     },
-  },
+    handleClose(){
+      this.$emit('close')
+    }
+  }
 }
 </script>
 <style lang="scss">

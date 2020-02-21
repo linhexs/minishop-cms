@@ -1,6 +1,6 @@
 <template>
   <!-- 列表页面 -->
-  <div class="container" v-if="!showEdit">
+  <div class="container" v-if="!switchComponent">
     <div class="header">
       <div class="title">轮播图列表</div>
     </div>
@@ -41,41 +41,43 @@
       @cancel="showDialog=false"
     ></delete-dialog>
   </div>
-  <banner-edit v-else @editClose="editClose" :editBannerData="editBannerData" @getBanner="getBannerItems"></banner-edit>
+  <component  v-else :is="targetComponent" :banner="row" @back="handleBack" />
 </template>
 
 <script>
-import banner from '../../../models/banner'
-import DeleteDialog from '../../../components/base/delete-dialog/delete-dialog'
-import BannerEdit from './BannerEdit'
+import Add from './Add'
+import Edit from './Edit'
+import banner from '@/models/banner'
+import DeleteDialog from '@/components/base/delete-dialog/delete-dialog'
 export default {
-  components: {
-    DeleteDialog,
-    BannerEdit,
-  },
-  data() {
+    name: 'List',
+  // 注册组件
+  components: { Add, Edit,DeleteDialog },
+   data() {
     return {
+      deleteText:'删除banner',
       bannerList: [],
-      editBannerData: [],
+      // 控制对话框显示/隐藏，默认不显示
       showDialog: false,
-      id: null, // 轮播图id
-      deleteText: '轮播图',
+      // 轮播图id
+      id: null,
+      // 显示加载状态
       loading: true,
-      showEdit: false,
-      // childId:null //子组件id
+      // 是否切换组件
+      switchComponent: false,
+      // 切换的目标组件
+      targetComponent: '',
+      // 点击的行数据
+      row: null,
     }
   },
-  async created() {
+  async mounted() {
+    this.loading
     this.getBanners()
   },
   methods: {
-    async getBanners(id= '') {
+    async getBanners() {
       const bannerList =await banner.getBanners()
-         bannerList.forEach(element => {
-          if(id===element.id){
-              this.handleEdit(element)
-          }
-        });
       this.bannerList = bannerList
       this.loading = false
     },
@@ -106,32 +108,30 @@ export default {
         })
       }
     },
-    async getBannerItems(id){
-       // this.childId = id
-        this.getBanners(id)
+    /**
+     * 编辑按钮
+     */
+    handleEdit(row) {
+      this.switchComponent = true
+      this.targetComponent = 'Edit'
+      this.row = row
     },
-    handleEdit(val) {
-      this.editBannerData = val
-      this.showEdit = true
-    },
-    editClose() {
-      this.showEdit = false
+    /**
+     * 返回
+     */
+    handleBack(){
+      this.switchComponent = false
       this.getBanners()
     },
   },
 }
 </script>
 <style lang="scss" scoped>
+@import '@/assets/styles/title.scss';
 .container {
   .header {
-    .title {
-      height: 59px;
-      line-height: 59px;
-      color: $parent-title-color;
-      font-size: 16px;
-      font-weight: 500;
-      text-indent: 40px;
-      border-bottom: 1px solid #dae1ec;
+    .title{
+        border-bottom: 1px solid #dae1ec;
     }
   }
   .table-container {

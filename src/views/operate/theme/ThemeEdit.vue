@@ -82,7 +82,6 @@ import banner from '../../../models/banner'
 import img from '../../../models/img'
 import theme from '../../../models/theme'
 import error from '../../../common/error'
-
 export default {
   components: {
     UploadImgs,
@@ -90,7 +89,7 @@ export default {
   props: {
     id: Number,
   },
-  mounted() {
+  created() {
     this.getIninData(this.id)
   },
   data() {

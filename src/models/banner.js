@@ -1,6 +1,7 @@
 import { get, _delete, post, patch, put } from '@/lin/plugins/axios'
 
 class Banner {
+  handleError = true
   /**
    * 获取banner列表
    */
@@ -26,36 +27,35 @@ class Banner {
     const res = await post('v1/banner', obj, { handleError: true })
     return res
   }
-  /**
-   * 修改banner主体信息
-   */
-  async editBannerInfo(id,obj) {
-    // { ids } 等价于 { ids : ids }，对象的key和value命名相同时的一种简写
-    const res = await patch(`v1/banner/${id}`, obj, { handleError: true })
+  async editBanner(id, name, description) {
+    const res = await patch(`v1/banner/${id}`, {
+      name,
+      description,
+    }, { handleError: this.handleError })
     return res
   }
+
   /**
-   * 删除bannerItem
-   * @param {*} ids 
+   * 新增轮播图元素
    */
-  async delBannerItemByIds(ids){
-    const res = await _delete('v1/banner/item', { ids }, { handleError: true })
+  async addBannerItems(items) {
+    const res = await post('v1/banner/item', { items }, { handleError: this.handleError })
     return res
   }
+
   /**
-   * 添加bannerItem
-   * @param {*} obj 
+   * 删除轮播图元素
    */
-  async addBannerItem(obj){
-    const res = await post('v1/banner/item',{items:[obj]},{ handleError: true })
+  async delBannerItems(ids) {
+    const res = await _delete('v1/banner/item', { ids }, { handleError: this.handleError })
     return res
   }
+
   /**
-   * 修改bannerItem
-   * @param {*} obj 
+   * 编辑轮播图元素
    */
-  async editBannerItem(obj){
-    const res = await put('v1/banner/item',{items:[obj]},{ handleError: true })
+  async editBannerItems(items) {
+    const res = await put('v1/banner/item', { items }, { handleError: this.handleError })
     return res
   }
 }

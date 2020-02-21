@@ -5,20 +5,11 @@
       <div class="title">商品库</div>
       <lin-search @query="onQueryChange" placeholder="请输入商品" />
       <div class="title-btn">
-        <el-button type="primary">新增商品</el-button>
+        <el-button type="primary" @click="addProduct">新增商品</el-button>
       </div>
     </div>
     <div class="table-container">
       <el-table v-loading="loading" :data="productsList">
-        <el-table-column type="expand">
-          <template slot-scope="scope">
-            <div class="expand-container">
-              <div v-for="(img, index) in scope.row.items" :key="index">
-                <img class="img" :src="img.img.url" />
-              </div>
-            </div>
-          </template>
-        </el-table-column>
         <el-table-column label="id" prop="id" width="80"></el-table-column>
         <el-table-column label="商品主图" width="180" align="center">
           <template slot-scope="scope">
@@ -28,7 +19,7 @@
           </template>
         </el-table-column>
         <el-table-column label="商品名称" width="150" prop="name"></el-table-column>
-        <el-table-column label="所属分类" width="150" prop="category_id"></el-table-column>
+        <el-table-column label="所属分类" width="150" prop="category.name"></el-table-column>
         <el-table-column label="商品单价" width="150" prop="price"></el-table-column>
         <el-table-column label="商品库存" width="150" prop="stock"></el-table-column>
         <el-table-column label="商品状态" width="150" prop="status">
@@ -102,6 +93,7 @@ export default {
       dialogFormVisible: false,
       page: 0,
       total_nums: 0,
+      id:null,
       count: 10,
       searchKeyword: '',
       showPage: true,
@@ -189,7 +181,10 @@ export default {
         this.getProducts()
       }, 1000)
     },
-  },
+    addProduct(){
+      this.$router.push('/product/add')
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

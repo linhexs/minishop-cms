@@ -18,6 +18,11 @@ const routes = [
     redirect: '/404',
     path: '*',
   },
+  // {
+  //   path:'/product/add',
+  //   name: 'productAdd',
+  //   component: ()=>import('@/views/product/products/ProductsAdd'),
+  // }
 ]
 
 export default routes

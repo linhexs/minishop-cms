@@ -26,15 +26,26 @@
         </el-table-column>
       </el-table>
     </div>
-      <delete-dialog
+    <delete-dialog
       :showDialog="showDelDialog"
       :id="id"
       :text="deleteText"
       @submit="deleteCategory"
       @cancel="showDelDialog=false"
     ></delete-dialog>
-    <category-add v-if="hackAdd"  @getCategory="getCategory"  :visible.sync="addVisible"></category-add>
-    <category-edit  v-if="hackEdit"  :editData="editData" @getCategory="getCategory"  :visible.sync="editVisible"></category-edit>
+    <category-add 
+    v-if="addForm"
+    @getCategory="getCategory" 
+     @close="addClose"
+    :visible.sync="addVisible">
+    </category-add>
+    <category-edit
+      v-if="editForm"
+      :editData="editData"
+      @getCategory="getCategory"
+      @close="editClose"
+      :visible.sync="editVisible"
+    ></category-edit>
   </div>
 </template>
 <script>
@@ -48,22 +59,30 @@ export default {
   components: {
     CategoryAdd,
     CategoryEdit,
-    DeleteDialog
+    DeleteDialog,
   },
   data() {
     return {
       categoryList: [],
       showDelDialog: false, //删除弹框
       loading: true,
-      id:null,//删除商品id
-      hackEdit: false,
-      hackAdd:false,
+      id: null, //删除商品id
       editData: {},
-      deleteText:'分类',
-      addVisible:false,
-      editVisible:false
+      deleteText: '分类',
+      addVisible: false,
+      editVisible: false,
+      editForm: false,
+      addForm:false,
     }
   },
+  // watch: {
+  //   editData() {
+  //     this.reFresh = false
+  //     this.$nextTick(() => {
+  //       this.reFresh = true
+  //     })
+  //   },
+  // },
   async created() {
     this.getCategory()
   },
@@ -72,25 +91,25 @@ export default {
      * 修改分类信息
      */
     handleEdit(val) {
-      this.hackEdit = true
       this.editData = val
-      this.editVisible = true;
+      this.editForm = true
+      this.editVisible = true
     },
     /**
      * 增加分类表单
      */
     handleAdd() {
-      this.hackAdd = true
-       this.addVisible = true;
+      this.addVisible = true
+      this.addForm = true
     },
     /**
      * 获取分类列表
      */
     async getCategory() {
-      this.categoryList = await product.getCategory()
+      this.categoryList = await product.getCategory();
+      this.addVisible = false, 
+      this.editVisible = false, 
       this.loading = false
-      this.hackEdit = false
-      this.hackAdd = false
     },
     /**
      * 显示删除对话框
@@ -118,6 +137,12 @@ export default {
           type: 'error',
         })
       }
+    },
+    editClose(){
+      this.editForm = false
+    },
+    addClose(){
+      this.addForm = false
     }
   }
 }

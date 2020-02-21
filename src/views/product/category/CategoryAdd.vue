@@ -17,18 +17,19 @@ export default {
       default: false,
     },
   },
-  mounted() {
+  created() {
     console.log('我add初始化了')
   },
   data() {
     return {
       showFormDialog: false,
       formTitle: '新增分类',
-      showFormDialog: false,
     }
   },
   methods: {
     modalClose() {
+      console.log(111)
+      this.handleClose()
       this.$emit('update:visible', false) // 直接修改父组件的属性
     },
     /**
@@ -42,7 +43,7 @@ export default {
           message: res.msg,
           type: 'success',
         })
-        this.$emit('getCategory')
+       this.handleClose()
       } catch (e) {
         console.log(e)
         this.$message({
@@ -51,7 +52,10 @@ export default {
         })
       }
     },
-  },
+    handleClose(){
+      this.$emit('close')
+    }
+  }
 }
 </script>
 <style lang="scss">

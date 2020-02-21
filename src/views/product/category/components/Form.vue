@@ -107,7 +107,6 @@ export default {
      */
     async handleSubmit() {
       const img = await this.$refs.uploadEle.getValue()
-      console.log(img)
       if (img.length === 1) {
         this.form.topic_img_id = img[0].imgId
       } else {

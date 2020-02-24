@@ -8,21 +8,36 @@
     </div>
     <el-divider />
     <div class="form-container">
-        <Form></Form>
+      <Form @submit="handleSubmit"></Form>
     </div>
   </div>
 </template>
 <script>
 import Form from './components/Form'
+import product from '@/models/product'
+import error from '@/common/error'
 export default {
   name: 'productAdd',
-  components:{
-    Form
+  components: {
+    Form,
   },
   methods: {
-      handleBack(){
-          this.$router.push('/product/list')
+    handleBack() {
+      this.$router.push('/product/list')
+    },
+    async handleSubmit(formData) {
+      try {
+        const res = await product.addProduct(formData)
+        // 添加成功，弹出一条消息提示
+        this.$message.success(res.msg)
+        this.handleBack()
+
+      } catch (e) {
+        console.log(e)
+        // 提示异常信息
+        this.$message.error(error(e.data.msg))
       }
+    },
   },
 }
 </script>

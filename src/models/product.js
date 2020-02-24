@@ -55,6 +55,14 @@ class Product {
       const res = await patch(`v1/product/${ids}`)
       return res
     }
+    /**
+     * 添加商品
+     * @param {*} obj 
+     */
+    async addProduct(obj){
+      const res = await post('v1/product',obj,{handleError:true})
+      return res
+    }
   }
   
 export default new Product()

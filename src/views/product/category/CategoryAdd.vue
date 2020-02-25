@@ -15,10 +15,7 @@ export default {
     visible: {
       type: Boolean,
       default: false,
-    },
-  },
-  created() {
-    console.log('我add初始化了')
+    }
   },
   data() {
     return {
@@ -28,7 +25,6 @@ export default {
   },
   methods: {
     modalClose() {
-      console.log(111)
       this.handleClose()
       this.$emit('update:visible', false) // 直接修改父组件的属性
     },

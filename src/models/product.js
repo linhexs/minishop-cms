@@ -20,7 +20,7 @@ class Product {
    */ 
     async delCategoryByIds(ids) {
       // { ids } 等价于 { ids : ids }，对象的key和value命名相同时的一种简写
-      const res = await _delete('v1/category', { ids }, { handleError: this.handleError })
+      const res = await _delete('v1/category', { ids }, { handleError: true })
       return res
     }
     /**
@@ -45,7 +45,7 @@ class Product {
      * @param {*} ids 
      */
     async delProductById(ids){
-      const res = await _delete('v1/product', { ids }, { handleError: this.handleError })
+      const res = await _delete('v1/product', { ids }, { handleError: true })
       return res
     }
     /**
@@ -61,6 +61,14 @@ class Product {
      */
     async addProduct(obj){
       const res = await post('v1/product',obj,{handleError:true})
+      return res
+    }
+    /**
+     * 修改商品主题数据
+     * @param {*} obj 
+     */
+    async editProduct(obj){
+      const res = await put('v1/product',obj,{handleError:true})
       return res
     }
   }

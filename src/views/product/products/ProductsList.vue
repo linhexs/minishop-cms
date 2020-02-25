@@ -1,6 +1,6 @@
 <template>
   <!-- 列表页面 -->
-  <div class="container">
+  <div class="container" v-if="!switchComponent">
     <div class="head">
       <div class="title">商品库</div>
       <lin-search @query="onQueryChange" placeholder="请输入商品" />
@@ -76,13 +76,20 @@
       ></el-pagination>
     </div>
   </div>
+  <product-edit 
+  v-else 
+  :productEdit="productEdit" 
+  @editClose="editClose">
+  </product-edit>
 </template>
 
 <script>
 import product from '../../../models/product'
 import LinSearch from '@/components/base/search/lin-search'
+import  ProductEdit from './ProductEdit'
 export default {
   components: {
+    ProductEdit,
     LinSearch,
   },
   data() {
@@ -90,13 +97,14 @@ export default {
       productsList: [],
       showDialog: false,
       loading: true,
-      dialogFormVisible: false,
+      switchComponent: false,//组件开关
       page: 0,
       total_nums: 0,
       id:null,
       count: 10,
-      searchKeyword: '',
-      showPage: true,
+      searchKeyword: '',//关键字
+      showPage: true, //显示分页
+      productEdit:{}, //编辑数据
     }
   },
   async created() {
@@ -143,7 +151,6 @@ export default {
           type: 'success',
         })
       } catch (error) {
-        console.log(error)
         this.loading = false
         this.$message({
           message: e.data.msg,
@@ -181,8 +188,25 @@ export default {
         this.getProducts()
       }, 1000)
     },
+    //添加商品
     addProduct(){
       this.$router.push('/product/add')
+    },
+    //修改商品信息
+    handleEdit(val){
+      this.switchComponent = true,
+      this.productEdit = val
+      if(val.status == 1){
+        this.productEdit.status = true
+      }else{
+        this.productEdit.status = false
+      }
+      //console.log(this.productEdit)
+    },
+    //关闭修改界面
+    editClose(){
+      this.getProducts()
+      this.switchComponent = false
     }
   }
 }

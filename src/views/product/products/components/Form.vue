@@ -4,7 +4,13 @@
       <el-col :lg="16">
         <el-form label-width="100px" ref="form" :rules="rules" :model="form">
           <el-form-item label="商品图片">
-            <upload-imgs ref="uploadEle" :multiple="true" :max-num="1" :remote-fuc="uploadImage" />
+            <upload-imgs
+              ref="uploadEle"
+              :value="mainImage"
+              :multiple="true"
+              :max-num="1"
+              :remote-fuc="uploadImage"
+            />
           </el-form-item>
           <el-form-item label="商品名称" prop="name">
             <el-input autocomplete="off" v-model="form.name" placeholder="请填写商品名称"></el-input>
@@ -48,20 +54,19 @@
     <div class="product-item">
       <div class="product-title">商品介绍数据</div>
       <div class="product-child-title">商品介绍图</div>
-      <upload-imgs ref="uploadEle1" :multiple="true" :max-num="8" :remote-fuc="uploadImage" />
+      <upload-imgs ref="uploadEle1" :value="propertyImage" :multiple="true" :max-num="8" :remote-fuc="uploadImage" />
       <div class="product-child-title">商品属性</div>
-      <el-button @click="dialogFormVisible=true">添加</el-button>
-      <el-button type="primary">编辑</el-button>
-      <el-button type="danger">删除</el-button>
+      <el-button type="primary" @click="dialogFormVisible=true">添加</el-button>
+      <el-button type="danger" @click="deleteTable">删除</el-button>
       <div class="product-item-table">
-        <el-table 
-           ref="multipleTable"
+        <el-table
+          ref="multipleTable"
           :data="form.property"
           tooltip-effect="dark"
           style="width: 100%"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column type="selection" width="55" key="index"></el-table-column>
+          <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column prop="name" label="属性名称"></el-table-column>
           <el-table-column prop="detail" label="属性详情"></el-table-column>
         </el-table>
@@ -88,6 +93,12 @@
   </div>
 </template>
 <script>
+function createId() {
+  return Math.random()
+    .toString(36)
+    .substring(2)
+}
+
 import UploadImgs from '@/components/base/upload-imgs'
 import img from '@/models/img'
 import imgDeal from '@/common/imgDeal'
@@ -98,11 +109,20 @@ export default {
   },
   created() {
     this.initCategory()
-    //this.initImage()
+    this.form = this.productEdit || this.form
+    if (this.form.img_id !== null && this.form.main_img_url !== '') {
+      this.initMainImage()
+    }
+    if (this.form.image.length > 0) {
+      this.initPropertyImage()
+    }
+  },
+  props: {
+    productEdit: Object,
   },
   data() {
     return {
-      //productImg: [],
+      productImg: [], //添加商品图
       dialogFormVisible: false,
       form: {
         name: '',
@@ -116,14 +136,18 @@ export default {
         image: [],
         property: [],
       },
+      mainImage: [],//修改商品初始化主图
+      propertyImage: [],//修改商品初始化介绍图
       //商品属性
       propertyForm: {
         name: '',
         detail: '',
       },
-      propertyTable: [],
       //商品分类数据
       category: [],
+      //表格选中数据
+      selectData:[],
+
       //验证表单
       rules: {
         name: [
@@ -173,6 +197,7 @@ export default {
           },
         ],
       },
+
     }
   },
   methods: {
@@ -201,17 +226,18 @@ export default {
       const productImg = imgItem.map(val => {
         return { img_id: val.imgId }
       })
-          //  console.log(productImg)
+      //  console.log(productImg)
       this.$refs.form.validate(valid => {
         if (valid) {
           this.form.status = this.form.status === true ? 1 : 0
-                 this.form.image = productImg
+          this.form.image = productImg
           this.$emit('submit', this.form)
-        }else{
-            this.$message.error('信息不完整')
+        } else {
+          this.$message.error('信息不完整')
         }
       })
     },
+    //添加property
     addProperty() {
       if (this.propertyForm.name !== '' || this.propertyForm.detail !== '') {
         this.form.property.push(this.propertyForm)
@@ -219,15 +245,51 @@ export default {
       this.propertyForm = {}
       this.dialogFormVisible = false
     },
-    handleSelectionChange(val){
-      console.log(val)
-      // const selectData = this.$refs.multipleTable.selection
+    //表格选中
+    handleSelectionChange(val) {
+        this.selectData = val
+    },
+    //删除表格选中
+    deleteTable(){
+      const selectData = this.selectData
       // console.log(selectData)
-      // // console.log(selectData)
-      // // this.propertyTable.remove(selectData)
-      // this.propertyTable.splice(this.$refs.multipleTable.store.states.selection, 1)
+      let index = 0;  
+      if(selectData){
+        selectData.forEach(item=>{
+          this.form.property.forEach((val,i)=>{
+            if(val ==item){
+                 index=i;
+            }
+          })
+           this.form.property.splice(index,1);
+        })
+      }
+    },
+    //初始化主图
+    initMainImage() {
+      this.mainImg = []
+      const img = {
+        id: createId(),
+        imgId: this.form.img_id,
+        display: this.form.main_img_url,
+      }
+      this.mainImage.push(img)
+    },
+    //初始化property图片
+    initPropertyImage() {
+      this.propertyImage = []
+      const items = this.form.image
+      //console.log(items)
+      items.forEach(item => {
+        const img = {
+          id: createId(),
+          imgId: item.img.id,
+          display: item.img.url,
+        }
+        this.propertyImage.push(img)
+      })
     }
-  },
+  }
 }
 </script>
 <style lang="scss">

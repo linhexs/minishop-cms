@@ -33,12 +33,12 @@
       @submit="deleteCategory"
       @cancel="showDelDialog=false"
     ></delete-dialog>
-    <category-add 
-    v-if="addForm"
-    @getCategory="getCategory" 
-     @close="addClose"
-    :visible.sync="addVisible">
-    </category-add>
+    <category-add
+      v-if="addForm"
+      @getCategory="getCategory"
+      @close="addClose"
+      :visible.sync="addVisible"
+    ></category-add>
     <category-edit
       v-if="editForm"
       :editData="editData"
@@ -72,7 +72,7 @@ export default {
       addVisible: false,
       editVisible: false,
       editForm: false,
-      addForm:false,
+      addForm: false,
     }
   },
   // watch: {
@@ -106,10 +106,8 @@ export default {
      * 获取分类列表
      */
     async getCategory() {
-      this.categoryList = await product.getCategory();
-      this.addVisible = false, 
-      this.editVisible = false, 
-      this.loading = false
+      this.categoryList = await product.getCategory()
+      ;(this.addVisible = false), (this.editVisible = false), (this.loading = false)
     },
     /**
      * 显示删除对话框
@@ -138,13 +136,15 @@ export default {
         })
       }
     },
-    editClose(){
-      this.editForm = false
+    editClose() {
+      ;(this.loading = true), (this.editForm = false)
+      this.getCategory()
     },
-    addClose(){
-      this.addForm = false
-    }
-  }
+    addClose() {
+      ;(this.loading = true), (this.addForm = false)
+      this.getCategory()
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>

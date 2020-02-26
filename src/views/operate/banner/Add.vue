@@ -16,7 +16,7 @@ import Form from './components/Form'
 import banner from '@/models/banner'
 export default {
   components: {
-    Form
+    Form,
   },
   methods: {
     async handleSubmit(formData) {
@@ -25,12 +25,12 @@ export default {
         key_word: item.key_word,
         type: item.type,
       }))
-      // 调用模型方法新增轮播图 
+      // 调用模型方法新增轮播图
       try {
         const res = await banner.addBanner(formData)
         // 添加成功，弹出一条消息提示
         this.$message.success(res.msg)
-       this.$router.push('/banner/list');
+        this.$router.push('/banner/list')
       } catch (e) {
         // 提示异常信息
         this.$message.error(e.data.msg)
@@ -42,7 +42,9 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/styles/title.scss';
 .container {
-
+  .title {
+    border-bottom: 1px solid #dae1ec;
+  }
   .wrap {
     padding: 20px;
   }

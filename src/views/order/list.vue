@@ -1,6 +1,6 @@
 <template>
   <!-- 列表页面 -->
-  <div class="container">
+  <div class="container" v-if="!switchComponent">
     <div class="head">
       <div class="title">订单列表</div>
       <div class="search-group">
@@ -32,17 +32,11 @@
         <el-table-column label="联系方式" prop="snap_address.mobile" width="120"></el-table-column>
         <el-table-column label="订单状态" prop="status" width="120"></el-table-column>
         <el-table-column label="订单创建时间" prop="create_time" width="120"></el-table-column>
-          <el-table-column label="操作" fixed="right" width="210">
+        <el-table-column label="操作" fixed="right" width="160">
           <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
-            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">查看详情信息</el-button>
-            <el-button
-              plain
-              size="mini"
-              type="danger"
-              @click="handleDel(scope.row.id)"
-              v-auth="'删除轮播图'"
-            >删除</el-button>
+            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">详情</el-button>
+            <el-button v-if="scope.row.status == 2" plain size="mini" type="success" @click="handleStatus">发货</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -58,11 +52,16 @@
       ></el-pagination>
     </div>
   </div>
+  <Info v-else :orderData="orderData" @close='close'></Info>
 </template>
 
 <script>
 import order from '../../models/order.js'
+import Info from './Info'
 export default {
+  components: {
+    Info,
+  },
   data() {
     return {
       loading: true,
@@ -73,6 +72,8 @@ export default {
       input: '',
       total_nums: 0,
       showPage: true,
+      switchComponent: false,
+      orderData: {},
       pickerOptions: {
         shortcuts: [
           {
@@ -119,20 +120,30 @@ export default {
         this.total_nums = recordList.total_nums
         this.loading = false
         this.showPage = true
-      } catch (error) {
+      } catch (e) {
         this.recordList = []
         this.page = 0
         this.total_nums = 0
         this.showPage = false
-        this.$message.error(`未查询到相关订单`)
+        this.$message.error(e.data.msg)
       }
     },
+    //分页操作
     handleCurrentChange(val) {
       this.loading = true
       this.page = --val
       this.getOrderList()
     },
-  },
+    //编辑订单详情
+    handleEdit(val) {
+      this.switchComponent = true
+      this.orderData = val
+    },
+    //关闭订单详情
+    close(){
+      this.switchComponent = false
+    }
+  }
 }
 </script>
 <style lang="scss">

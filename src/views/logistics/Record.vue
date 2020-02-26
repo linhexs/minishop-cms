@@ -3,7 +3,7 @@
   <div class="container">
     <div class="head">
       <div class="title">发货记录</div>
-      <div class="input-search">
+      <div class="input-search" v-if="switchSearch">
         <el-input v-model="input" placeholder="请输入内容" size="medium" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="订单号" value="1"></el-option>
@@ -12,6 +12,11 @@
           </el-select>
           <el-button slot="append" icon="el-icon-search" @click="getRecord(select,input)"></el-button>
         </el-input>
+      </div>
+      <div v-else>
+        <span class="back" @click="handleBack">
+        <i class="iconfont icon-fanhui" /> 返回
+      </span>
       </div>
     </div>
     <div class="table-container">
@@ -39,6 +44,7 @@
 
 <script>
 import record from '../../models/record.js'
+import error from '@/common/error'
 export default {
   data() {
     return {
@@ -49,7 +55,8 @@ export default {
       select: '',
       input: '',
       total_nums:0,
-      showPage:true
+      showPage:true,
+      switchSearch:true
     }
   },
   created() {
@@ -57,6 +64,12 @@ export default {
   },
   methods: {
     getRecord(select, input) {
+      if(input === ''){
+        this.$message.error('请输入查询内容');return;
+      }
+      if(select === ''){
+        this.$message.error('请选择查询内容');return;
+      }
       switch (select) {
         case '1':
           this.getData('order_no', input)
@@ -76,18 +89,26 @@ export default {
         this.total_nums = recordList.total_nums
         this.loading = false
         this.showPage = true
-      } catch (error) {
+      } catch (e) {
         this.recordList = []
         this.page = 0
         this.total_nums = 0
         this.showPage = false
-        this.$message.error(`未查询到相关订单`)
+        this.$message.error(error(e.data.msg))
+        this.switchSearch = false
       }
     },
     handleCurrentChange(val){
         this.page = --val
         this.getData()
     },
+    handleBack(){
+      this.loading=true
+      this.select= '',
+      this.input= '',
+      this.switchSearch = true
+      this.getData()
+    }
   }
 }
 </script>
@@ -101,6 +122,12 @@ export default {
     .input-search {
       width: 350px;
       padding-right: 30px;
+    }
+    .back {
+      color: $parent-title-color;
+      float: right;
+      margin-right: 40px;
+      cursor: pointer;
     }
     .input-with-select .el-input-group__prepend {
       background-color: #fff;

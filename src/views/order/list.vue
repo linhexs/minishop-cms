@@ -9,18 +9,16 @@
             <el-button slot="append" icon="el-icon-search" @click="getRecord()"></el-button>
           </el-input>
         </div>
-        <el-date-picker
-          v-model="value2"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          :picker-options="pickerOptions"
-        ></el-date-picker>
+        <lin-date-picker @dateChange="handleDateChange" ref="searchDate" class="date"></lin-date-picker>
       </div>
     </div>
+     <transition name="fade">
+      <div class="search" v-if="searchDate.length">
+        <p class="search-tip">找到<span class="search-num">{{total_nums}}</span>条信息
+        </p>
+        <button class="search-back" @click="backList">返回全部日志</button>
+      </div>
+    </transition>
     <div class="table-container">
       <el-table v-loading="loading" :data="recordList">
         <el-table-column label="序号" prop="id" width="100"></el-table-column>
@@ -36,7 +34,13 @@
           <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
             <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">详情</el-button>
-            <el-button v-if="scope.row.status == 2" plain size="mini" type="success" @click="handleStatus">发货</el-button>
+            <el-button
+              v-if="scope.row.status == 2"
+              plain
+              size="mini"
+              type="success"
+              @click="handleStatus"
+            >发货</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -52,15 +56,17 @@
       ></el-pagination>
     </div>
   </div>
-  <Info v-else :orderData="orderData" @close='close'></Info>
+  <Info v-else :orderData="orderData" @close="close"></Info>
 </template>
 
 <script>
 import order from '../../models/order.js'
 import Info from './Info'
+import LinDatePicker from '@/components/base/date-picker/lin-date-picker'
 export default {
   components: {
     Info,
+    LinDatePicker
   },
   data() {
     return {
@@ -74,39 +80,7 @@ export default {
       showPage: true,
       switchComponent: false,
       orderData: {},
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
-              picker.$emit('pick', [start, end])
-            },
-          },
-          {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-              picker.$emit('pick', [start, end])
-            },
-          },
-          {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date()
-              const start = new Date()
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
-              picker.$emit('pick', [start, end])
-            },
-          },
-        ],
-      },
-      value1: '',
-      value2: '',
+      searchDate: [],//时间搜索
     }
   },
   created() {
@@ -115,7 +89,7 @@ export default {
   methods: {
     async getOrderList(input = '') {
       try {
-        const recordList = await order.getOrder(this.page, this.count, input)
+        const recordList = await order.getOrder(this.page, this.count, input,this.searchDate)
         this.recordList = recordList.collection
         this.total_nums = recordList.total_nums
         this.loading = false
@@ -140,8 +114,21 @@ export default {
       this.orderData = val
     },
     //关闭订单详情
-    close(){
+    close() {
       this.switchComponent = false
+    },
+    //根据时间筛选
+    handleDateChange(date) {
+      this.page = 0
+      this.loading = true
+      this.searchDate = date
+      this.getOrderList()
+    },
+    backList(){
+      this.$refs.searchDate.clear()
+      this.loading = true
+      this.searchDate=[],
+      this.getOrderList()
     }
   }
 }
@@ -170,6 +157,42 @@ export default {
       font-size: 16px;
       font-weight: 500;
       text-indent: 40px;
+    }
+  }
+   .search {
+    height: 52px;
+    width: 100%;
+    background: rgba(57, 99, 188, 0.1);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 24px;
+
+    .search-tip {
+      margin-left: 40px;
+      height: 52px;
+      line-height: 52px;
+      color: #354058;
+      font-size: 14px;
+
+      .search-keyword {
+        color: $theme;
+      }
+
+      .search-num {
+        color: #f4516c;
+      }
+    }
+    .search-back {
+      margin: 8px 20px;
+      height: 32px;
+      background: #f4516c;
+      border: none;
+      border-radius: 2px;
+      color: #fff;
+      padding: 0 13px;
+      font-size: 14px;
+      cursor: pointer;
     }
   }
   .table-container {

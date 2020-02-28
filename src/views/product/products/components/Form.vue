@@ -54,7 +54,13 @@
     <div class="product-item">
       <div class="product-title">商品介绍数据</div>
       <div class="product-child-title">商品介绍图</div>
-      <upload-imgs ref="uploadEle1" :value="propertyImage" :multiple="true" :max-num="8" :remote-fuc="uploadImage" />
+      <upload-imgs
+        ref="uploadEle1"
+        :value="propertyImage"
+        :multiple="true"
+        :max-num="8"
+        :remote-fuc="uploadImage"
+      />
       <div class="product-child-title">商品属性</div>
       <el-button type="primary" @click="dialogFormVisible=true">添加</el-button>
       <el-button type="danger" @click="deleteTable">删除</el-button>
@@ -136,8 +142,8 @@ export default {
         image: [],
         property: [],
       },
-      mainImage: [],//修改商品初始化主图
-      propertyImage: [],//修改商品初始化介绍图
+      mainImage: [], //修改商品初始化主图
+      propertyImage: [], //修改商品初始化介绍图
       //商品属性
       propertyForm: {
         name: '',
@@ -146,7 +152,7 @@ export default {
       //商品分类数据
       category: [],
       //表格选中数据
-      selectData:[],
+      selectData: [],
 
       //验证表单
       rules: {
@@ -197,7 +203,6 @@ export default {
           },
         ],
       },
-
     }
   },
   methods: {
@@ -223,14 +228,20 @@ export default {
       }
       //商品介绍图
       const imgItem = await this.$refs.uploadEle1.getValue()
-      const productImg = imgItem.map(val => {
-        return { img_id: val.imgId }
+      const propertyImg = []
+      imgItem.forEach(item => {
+        const img = {
+          img_id: item.imgId,
+          order: 1,
+          product_id: this.form.id,
+          id: item.id,
+        }
+        propertyImg.push(img)
       })
-      //  console.log(productImg)
       this.$refs.form.validate(valid => {
         if (valid) {
           this.form.status = this.form.status === true ? 1 : 0
-          this.form.image = productImg
+          this.form.image = propertyImg
           this.$emit('submit', this.form)
         } else {
           this.$message.error('信息不完整')
@@ -247,21 +258,21 @@ export default {
     },
     //表格选中
     handleSelectionChange(val) {
-        this.selectData = val
+      this.selectData = val
     },
     //删除表格选中
-    deleteTable(){
+    deleteTable() {
       const selectData = this.selectData
       // console.log(selectData)
-      let index = 0;  
-      if(selectData){
-        selectData.forEach(item=>{
-          this.form.property.forEach((val,i)=>{
-            if(val ==item){
-                 index=i;
+      let index = 0
+      if (selectData) {
+        selectData.forEach(item => {
+          this.form.property.forEach((val, i) => {
+            if (val == item) {
+              index = i
             }
           })
-           this.form.property.splice(index,1);
+          this.form.property.splice(index, 1)
         })
       }
     },
@@ -282,14 +293,14 @@ export default {
       //console.log(items)
       items.forEach(item => {
         const img = {
-          id: createId(),
+          id: item.id ? item.id : '',
           imgId: item.img.id,
           display: item.img.url,
         }
         this.propertyImage.push(img)
       })
-    }
-  }
+    },
+  },
 }
 </script>
 <style lang="scss">

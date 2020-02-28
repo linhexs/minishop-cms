@@ -78,7 +78,7 @@
   </div>
   <product-edit 
   v-else 
-  :productEdit="productEdit" 
+  :productEditData="productEditData" 
   @editClose="editClose">
   </product-edit>
 </template>
@@ -86,7 +86,7 @@
 <script>
 import product from '../../../models/product'
 import LinSearch from '@/components/base/search/lin-search'
-import  ProductEdit from './ProductEdit'
+import ProductEdit from './ProductEdit'
 export default {
   components: {
     ProductEdit,
@@ -104,7 +104,7 @@ export default {
       count: 10,
       searchKeyword: '',//关键字
       showPage: true, //显示分页
-      productEdit:{}, //编辑数据
+      productEditData:{}, //编辑数据
     }
   },
   async created() {
@@ -195,16 +195,17 @@ export default {
     //修改商品信息
     handleEdit(val){
       this.switchComponent = true,
-      this.productEdit = val
+      this.productEditData = val
       if(val.status == 1){
-        this.productEdit.status = true
+        this.productEditData.status = true
       }else{
-        this.productEdit.status = false
+        this.productEditData.status = false
       }
       //console.log(this.productEdit)
     },
     //关闭修改界面
     editClose(){
+      this.loading = true
       this.getProducts()
       this.switchComponent = false
     }

@@ -71,6 +71,34 @@ class Product {
       const res = await put('v1/product',obj,{handleError:true})
       return res
     }
+    /**
+     * 新增商品介绍图片
+     * @param {*} obj 
+     */
+    async addProductImg(obj){
+      console.log(obj)
+      const res = await post('v1/product/image',{image:obj},{handleError:true})
+      return res
+    }
+    /**
+     * 修改商品介绍图片
+     * @param {*} obj 
+     */
+    async editProductImg(obj){
+      console.log({image:obj})
+      const res = await put('v1/product/image',{image:obj},{handleError:true})
+      return res
+    }
+    /**
+     * 删除商品介绍图片
+     * @param {*} obj 
+     */
+    async delProductImg(obj){
+      console.log(obj)
+      const res = await _delete('v1/product/image',{ids:obj},{handleError:true})
+      console.log(res)
+      return res
+    }
   }
   
 export default new Product()

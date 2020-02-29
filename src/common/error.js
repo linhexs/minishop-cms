@@ -6,7 +6,7 @@ export default function(obj){
     if(typeof obj === 'string'){
         return obj
     }
-    console.log(Object.values(obj).length)
+    //console.log(Object.values(obj).length)
     if(Object.values(obj).length>=1){
         return Object.values(obj)[0]
     }else{

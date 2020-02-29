@@ -280,7 +280,6 @@ export default {
 <style lang="scss" scoped>
 .container {
   padding: 0 30px;
-
   .title {
     height: 59px;
     line-height: 59px;

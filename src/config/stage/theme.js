@@ -16,6 +16,7 @@ const themeRouter = {
         route: '/theme/list',
         filePath: 'views/operate/theme/ThemeList.vue',
         inNav: true,
+        permission: ['主题列表'],
       },
       {
         title: '新增主题',
@@ -25,6 +26,7 @@ const themeRouter = {
         icon: 'iconfont icon-add',
         name: 'themeAdd',
         filePath: 'views/operate/theme/ThemeAdd.vue',
+        permission: ['新增主题'],
       },
     ],
   }

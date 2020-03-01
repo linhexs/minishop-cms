@@ -21,7 +21,7 @@
         <el-table-column label="操作" fixed="right" width="170">
           <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
-            <el-button plain size="mini" type="primary" ref="inputResult" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button plain size="mini" type="primary" ref="inputResult" @click="handleEdit(scope.row)" v-auth="'编辑轮播图'">编辑</el-button>
             <el-button
               plain
               size="mini"

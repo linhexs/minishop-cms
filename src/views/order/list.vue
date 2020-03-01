@@ -43,13 +43,14 @@
         <el-table-column label="操作" fixed="right" width="160">
           <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
-            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">详情</el-button>
+            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)"  v-auth="'订单详情'">详情</el-button>
             <el-button
               v-if="scope.row.status == 2"
               plain
               size="mini"
               type="success"
               @click="deliverConfirm(scope.row.id)"
+               v-auth="'订单发货'"
             >发货</el-button>
           </template>
         </el-table-column>
@@ -229,7 +230,7 @@ export default {
   },
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .container {
   .head {
     display: flex;
@@ -263,14 +264,12 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     margin-top: 24px;
-
     .search-tip {
       margin-left: 40px;
       height: 52px;
       line-height: 52px;
       color: #354058;
       font-size: 14px;
-
       .search-keyword {
         color: $theme;
       }

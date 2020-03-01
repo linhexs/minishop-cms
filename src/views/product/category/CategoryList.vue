@@ -4,7 +4,7 @@
     <div class="head">
       <div class="title">商品分类列表</div>
       <div class="title-btn">
-        <el-button type="primary" @click="handleAdd">新增分类</el-button>
+        <el-button type="primary" @click="handleAdd"  v-auth="'新增商品分类'">新增分类</el-button>
       </div>
     </div>
     <div class="table-container">
@@ -14,13 +14,13 @@
         <el-table-column label="分类描述" prop="description"></el-table-column>
         <el-table-column label="操作" fixed="right" width="170">
           <template slot-scope="scope">
-            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)"  v-auth="'编辑商品分类'">编辑</el-button>
             <el-button
               plain
               size="mini"
               type="danger"
               @click="handleDel(scope.row.id)"
-              v-auth="'删除分类'"
+              v-auth="'删除商品分类'"
             >删除</el-button>
           </template>
         </el-table-column>

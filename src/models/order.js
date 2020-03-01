@@ -30,6 +30,14 @@ class order {
     const res = await post(`v1/order/shipment/${id}`,obj,{handleError:true})
     return res
   }
+  /**
+   * 获取物流
+   */
+  async Logistics(order_no){
+    console.log(`v1/Logistics/${order_no}`)
+    const res = await get(`v1/logistics/${order_no}`,{handleError:true})
+    return res
+  }
 }
 
 export default new order()

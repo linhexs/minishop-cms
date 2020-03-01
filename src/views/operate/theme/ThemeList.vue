@@ -26,13 +26,13 @@
         <el-table-column label="操作" fixed="right" width="170">
           <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
-            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)"  v-auth="'编辑主题'">编辑</el-button>
             <el-button
               plain
               size="mini"
               type="danger"
               @click="handleDel(scope.row.id)"
-              v-auth="'删除轮播图'"
+              v-auth="'删除主题'"
             >删除</el-button>
           </template>
         </el-table-column>

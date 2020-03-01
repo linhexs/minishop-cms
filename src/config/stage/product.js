@@ -15,6 +15,7 @@ const productRouter = {
       route: '/category/list',
       filePath: 'views/product/category/CategoryList.vue',
       inNav: true,
+      permission: ['分类列表'],
     },
     {
       title: '商品库',
@@ -23,6 +24,7 @@ const productRouter = {
       route: '/product/list',
       filePath: 'views/product/products/ProductsList.vue',
       inNav: true,
+      permission: ['商品列表'],
     },
     {
       title: '新增商品',
@@ -31,6 +33,7 @@ const productRouter = {
       route: '/product/add',
       filePath: 'views/product/products/ProductsAdd.vue',
       inNav: true,
+      permission: ['新增商品'],
     },
   ],
 }

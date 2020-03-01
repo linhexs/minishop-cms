@@ -15,6 +15,7 @@ const order = {
         route: '/order/List',
         filePath: 'views/order/List.vue',
         inNav: true,
+        permission: ['订单列表'],
       },
     ],
   }

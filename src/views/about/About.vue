@@ -51,62 +51,12 @@
             </ul>
           </div>
           <div class="team-icon">
-            <img src="../../assets/img/about/qrcode.jpg" alt />
+            <!-- <img src="../../assets/img/about/qrcode.jpg" alt /> -->
           </div>
           <p class="team-label">扫码体验小程序</p>
         </div>
       </div>
     </div>
-    <!-- <div class="quantity-statistics">
-      <div class="quantity-item">
-        <div class="quantity-detail">
-          <div class="quantity-detail-box">
-            <div class="quantity-title">总访问量</div>
-            <div class="quantity-border-line"></div>
-            <div class="quantity">11,590</div>
-          </div>
-        </div>
-        <div class="quantity-icon">
-          <img src="../../assets/img/about/icon.png" alt />
-        </div>
-      </div>
-      <div class="quantity-item">
-        <div class="quantity-detail">
-          <div class="quantity-detail-box">
-            <div class="quantity-title">总用户数</div>
-            <div class="quantity-border-line"></div>
-            <div class="quantity">51,862</div>
-          </div>
-        </div>
-        <div class="quantity-icon">
-          <img src="../../assets/img/about/icon.png" alt />
-        </div>
-      </div>
-      <div class="quantity-item">
-        <div class="quantity-detail">
-          <div class="quantity-detail-box">
-            <div class="quantity-title">新增访问量 (月)</div>
-            <div class="quantity-border-line"></div>
-            <div class="quantity">1,862</div>
-          </div>
-        </div>
-        <div class="quantity-icon">
-          <img src="../../assets/img/about/icon.png" alt />
-        </div>
-      </div>
-      <div class="quantity-item">
-        <div class="quantity-detail">
-          <div class="quantity-detail-box">
-            <div class="quantity-title">新增用户数</div>
-            <div class="quantity-border-line"></div>
-            <div class="quantity">1,323</div>
-          </div>
-        </div>
-        <div class="quantity-icon">
-          <img src="../../assets/img/about/icon.png" alt />
-        </div>
-      </div>
-    </div>-->
     <div class="information">
       <div class="personal">
         <div class="el-card__header">
@@ -114,6 +64,14 @@
         </div>
         <div class="el-card__body">
           <ve-line :data="chartData" :settings="chartSettings" :colors="colors"></ve-line>
+        </div>
+      </div>
+      <div class="personal">
+        <div class="el-card__header">
+          <span>会员增长趋势</span>
+        </div>
+        <div class="el-card__body">
+          <ve-histogram :data="chartMemberData" :settings="chartMemberSettings"></ve-histogram>
         </div>
       </div>
     </div>
@@ -130,7 +88,13 @@ export default {
           'count': '订单量',
           'total_price': '订单额'
         },
-    }
+    },
+    this.chartMemberSettings = {
+        labelMap: {
+          'count': '会员',
+          'total_price': '订单额'
+        },
+      }
     this.colors = ['#c23531','#2f4554', '#61a0a8',
         '#d48265', '#91c7ae','#749f83', 
         '#ca8622', '#bda29a','#6e7074',
@@ -141,6 +105,10 @@ export default {
       chartData: {
           columns: ['date', 'count', 'total_price'],
           rows:[]
+        },
+    chartMemberData:{
+      columns: ['date', 'count'],
+          rows: []
         }
     }
   },
@@ -166,6 +134,8 @@ export default {
       }
       const res = await about.getData(obj)
       this.chartData.rows =  res.slice(1,32)
+      const resByMember = await about.getMemberData(obj)
+      this.chartMemberData.rows =  resByMember 
     }
   },
 }
@@ -386,6 +356,7 @@ export default {
   .information {
     margin-top: 20px;
     display: flex;
+    flex-direction: column;
     .personal {
       flex: 1;
       // width: 500px;
@@ -393,6 +364,7 @@ export default {
       background: rgba(255, 255, 255, 1);
       box-shadow: 0px 2px 14px 0px rgba(243, 243, 243, 1);
       border-radius: 8px;
+      margin-bottom: 30px;
       .el-card__header {
         height: 50px;
         border-bottom: 1px solid #ebeef5;

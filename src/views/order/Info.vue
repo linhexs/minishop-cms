@@ -64,19 +64,41 @@
           </el-form>
         </div>
       </el-card>
-       <el-card style="margin-bottom: 50px;">
+      <el-card style="margin-bottom: 50px;">
         <div slot="header" class="clearfix">
           <span>物流信息</span>
         </div>
         <div class="send">
-            <el-button type="primary" icon="el-icon-search">查看物流信息</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="openLogistics">查看物流信息</el-button>
         </div>
       </el-card>
     </div>
+    <el-drawer title="快递信息" size="100%" :visible.sync="drawer" :direction="direction">
+      <div class="time-line">
+        <!-- <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+          <li v-for="i in count" class="infinite-list-item" :key="i"> -->
+            <el-timeline>
+              <el-timeline-item
+                v-for="(activity, index) in Logistics"
+                :key="index"
+                :color="datetimeColor"
+                :timestamp="activity.datetime"
+                placement="top"
+              >
+                <el-card>
+                  <p>{{activity.remark}}</p>
+                </el-card>
+              </el-timeline-item>
+            </el-timeline>
+          <!-- </li>
+        </ul> -->
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
+import order from '@/models/order.js'
 export default {
   name: 'orderInfo',
   props: {
@@ -87,7 +109,12 @@ export default {
   },
   data() {
     return {
+      datetimeColor: '#0bbd87',
       orderInfo: {},
+      drawer: false,
+      direction: 'btt',
+      Logistics: [],
+      count: 0,
     }
   },
   computed: {
@@ -118,10 +145,25 @@ export default {
       }
       this.orderInfo = order
     },
-    handleBack(){
-        this.$emit('close')
-    }
-  }
+    load() {
+      this.count += 2
+    },
+    handleBack() {
+      this.$emit('close')
+    },
+    /**
+     * 获取物流
+     */
+    async openLogistics() {
+      try {
+        const res = await order.Logistics(this.orderInfo.order_no)
+        this.Logistics = res
+        this.drawer = true
+      } catch (e) {
+        this.$message.error(e.data.msg)
+      }
+    },
+  },
 }
 </script>
 
@@ -131,6 +173,12 @@ export default {
   margin-left: 120px;
 }
 .container {
+  .time-line {
+    padding: 0 40px;
+    height: 17%;
+    overflow: scroll
+
+  }
   .header {
     height: 39px;
     line-height: 59px;
@@ -171,8 +219,8 @@ export default {
         }
       }
     }
-    .send{
-        text-align: center
+    .send {
+      text-align: center;
     }
   }
   .submit {

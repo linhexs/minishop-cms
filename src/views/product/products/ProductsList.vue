@@ -5,7 +5,7 @@
       <div class="title">商品库</div>
       <lin-search @query="onQueryChange" placeholder="请输入商品" />
       <div class="title-btn">
-        <el-button type="primary" @click="addProduct">新增商品</el-button>
+        <el-button type="primary" @click="addProduct"  v-auth="'新增商品'">新增商品</el-button>
       </div>
     </div>
     <div class="table-container">
@@ -38,6 +38,7 @@
               size="mini"
               type="warning"
               @click="handleByProductStatus(scope.row.id)"
+              v-auth="'商品上架/下架'"
             >下架</el-button>
             <el-button
               v-else
@@ -45,14 +46,15 @@
               size="mini"
               type="success"
               @click="handleByProductStatus(scope.row.id)"
+               v-auth="'商品上架/下架'"
             >上架</el-button>
-            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)"  v-auth="'编辑商品'">编辑</el-button>
             <el-button
               plain
               size="mini"
               type="danger"
               @click="handleDel(scope.row.id)"
-              v-auth="'删除轮播图'"
+              v-auth="'删除商品'"
             >删除</el-button>
           </template>
         </el-table-column>

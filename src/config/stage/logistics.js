@@ -15,6 +15,7 @@ const Record = {
         route: '/logistics/Record',
         filePath: 'views/logistics/Record.vue',
         inNav: true,
+        permission: ['发货记录列表'],
       },
     ],
   }

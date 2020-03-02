@@ -12,10 +12,10 @@ const Record = {
         title: '发货列表',
         type: 'view',
         name: 'Record',
-        route: '/logistics/Record',
+        route: '/logistics/record',
         filePath: 'views/logistics/Record.vue',
         inNav: true,
-        permission: ['发货记录列表'],
+        //permission: ['发货记录列表'],
       },
     ],
   }

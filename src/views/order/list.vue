@@ -31,10 +31,10 @@
         <el-table-column label="订单金额" prop="total_price" width="90"></el-table-column>
         <el-table-column label="订单状态" width="150">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status===1" type="info">{{dealStatus(scope.row.status)}}</el-tag>
-            <el-tag v-else-if="scope.row.status===2" type="warning">{{dealStatus(scope.row.status)}}</el-tag>
-            <el-tag v-else-if="scope.row.status===3" type="success">{{dealStatus(scope.row.status)}}</el-tag>
-            <el-tag v-else-if="scope.row.status===4" type="danger">{{dealStatus(scope.row.status)}}</el-tag>
+            <el-tag v-if="scope.row.status==='1'" type="info">{{dealStatus(scope.row.status)}}</el-tag>
+            <el-tag v-else-if="scope.row.status==='2'" type="warning">{{dealStatus(scope.row.status)}}</el-tag>
+            <el-tag v-else-if="scope.row.status==='3'" type="success">{{dealStatus(scope.row.status)}}</el-tag>
+            <el-tag v-else-if="scope.row.status==='4'" type="danger">{{dealStatus(scope.row.status)}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="收货人" prop="snap_address.name" width="100"></el-table-column>
@@ -160,6 +160,7 @@ export default {
         this.page = 0
         this.total_nums = 0
         this.showPage = false
+        this.loading = false
         this.$message.error(error(e.data.msg))
       }
     },
@@ -212,16 +213,16 @@ export default {
     },
     dealStatus(status) {
       switch (status) {
-        case 1:
+        case '1':
           status = '未支付'
           break
-        case 2:
+        case '2':
           status = '已支付'
           break
-        case 3:
+        case '3':
           status = '已发货'
           break
-        case 4:
+        case '4':
           status = '已支付但库存不足'
           break
       }

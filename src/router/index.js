@@ -5,6 +5,10 @@ import store from '../store'
 import appConfig from '@/config/index'
 import Util from '@/lin/utils/util'
 
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+return routerPush.call(this, location).catch(error=> error)
+}
 Vue.use(Router)
 
 // 判断是否需要登录访问, 配置位于 config 文件夹

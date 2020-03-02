@@ -12,10 +12,10 @@ const order = {
         title: '订单列表',
         type: 'view',
         name: 'order',
-        route: '/order/List',
+        route: '/order/list',
         filePath: 'views/order/List.vue',
         inNav: true,
-        permission: ['订单列表'],
+        //permission: ['订单列表'],
       },
     ],
   }

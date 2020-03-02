@@ -176,7 +176,6 @@ export default {
             message: '商品库存不能为空',
             trigger: 'blur',
           },
-          { type: 'number', message: '商品库存必须为数字', trigger: 'blur' },
         ],
         category_id: [
           {

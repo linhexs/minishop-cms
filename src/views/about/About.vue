@@ -68,7 +68,7 @@
       </div>
       <div class="personal">
         <div class="el-card__header">
-          <span>会员增长趋势</span>
+          <span>最近一周会员增长趋势</span>
         </div>
         <div class="el-card__body">
           <ve-histogram :data="chartMemberData" :settings="chartMemberSettings"></ve-histogram>
@@ -80,7 +80,7 @@
 
 <script>
 import about from './../../models/about'
-import {nowDate,lastMonthDate} from './../../common/date'
+import {nowDate,lastMonthDate,weekDate} from './../../common/date'
 export default {
   data() {
     this.chartSettings = {
@@ -127,14 +127,20 @@ export default {
     async getData(){
       const nDate = nowDate()
       const lDate = lastMonthDate()
-      const obj = {
+      const wDate = weekDate()
+      const lastMonthDataObj = {
         start:lDate,
         end:nDate,
         type:'day'
       }
-      const res = await about.getData(obj)
+      const weekDataObj={
+        start:wDate,
+        end:nDate,
+        type:'day'
+      }
+      const res = await about.getData(lastMonthDataObj)
       this.chartData.rows =  res.slice(1,32)
-      const resByMember = await about.getMemberData(obj)
+      const resByMember = await about.getMemberData(weekDataObj)
       this.chartMemberData.rows =  resByMember 
     }
   },

@@ -130,16 +130,16 @@ export default {
     initData() {
       const order = this.orderData
       switch (order.status) {
-        case 1:
+        case '1':
           order.status = '未支付'
           break
-        case 2:
+        case '2':
           order.status = '已支付'
           break
-        case 3:
+        case '3':
           order.status = '已发货'
           break
-        case 4:
+        case '4':
           order.status = '已支付但库存不足'
           break
       }
@@ -180,7 +180,7 @@ export default {
 
   }
   .header {
-    height: 39px;
+    height: 59px;
     line-height: 59px;
     color: $parent-title-color;
     font-size: 16px;

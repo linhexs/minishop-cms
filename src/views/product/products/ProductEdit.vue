@@ -81,7 +81,6 @@ export default {
         addProductItems = this._processAddItemsArray(image)
         delProductItems = this._processDelItemsArray(image)
         editProductItems = this._processEditItemsArray(image)
-        console.log(editProductItems)
       }
       try {
         if (delProductItems.length > 0) {

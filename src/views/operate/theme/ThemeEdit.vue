@@ -23,8 +23,8 @@
             </el-form-item>
             <el-form-item label="主题图">
               <upload-imgs
-                ref="uploadEle3"
-                @func="getHeadImgPath"
+                ref="uploadEle1"
+                :remote-fuc="uploadImage"
                 :multiple="true"
                 :max-num="1"
                 :value="topic_img"
@@ -33,8 +33,8 @@
 
             <el-form-item label="详情页头图">
               <upload-imgs
-                ref="uploadEle3"
-                @func="getTopicImgPath"
+                ref="uploadEle2"
+                :remote-fuc="uploadImage"
                 :multiple="true"
                 :max-num="1"
                 :value="head_img"
@@ -46,7 +46,7 @@
             <el-button @click="addProduct">选择关联商品</el-button>
           </div>
           <el-table :data="productValue" tooltip-effect="dark" style="width: 100%">
-            <el-table-column prop="name" label="姓名" width="200"></el-table-column>
+            <el-table-column prop="name" label="商品名称" width="200"></el-table-column>
             <el-table-column prop="price" label="单价" width="200"></el-table-column>
             <el-table-column prop="stock" label="商品库存" width="200"></el-table-column>
             <el-table-column prop="summary" label="商品摘要" show-overflow-tooltip></el-table-column>
@@ -87,7 +87,7 @@ export default {
     UploadImgs,
   },
   props: {
-    id: Number,
+    id: String,
   },
   created() {
     this.getIninData(this.id)
@@ -95,10 +95,9 @@ export default {
   data() {
     return {
       showDialog: false,
-      topic_img: [],//话题图片
-      themeId: null,//主题id
+      topic_img: [], //话题图片
       loading: true,
-      head_img: [],//头图
+      head_img: [], //头图
       products: [], //全部可用的关联商品
       productData: [], //transfer中渲染数据
       productByName: [], //所有商品name
@@ -106,6 +105,7 @@ export default {
       productKey: [], //transfer选定的数据索引
       productValue: [], //商品表格数据
       form: {},
+      productByIds: [], //初始化编辑主题关联商品
       filterMethod(query, item) {
         return item.product.indexOf(query) > -1
       },
@@ -136,10 +136,11 @@ export default {
         },
       ]
       const ids = []
-      res.products.map(item=>{
-       ids.push(item.id)
+      res.products.map(item => {
+        ids.push(item.id)
       })
-      this.productKey= ids
+      this.productByIds = ids
+      this.productKey = ids
       this.productValue = res.products
     },
     /**
@@ -166,38 +167,45 @@ export default {
      * 将数据渲染到表格上
      */
     sendToProductTable() {
-      const products =  this.products
+      const products = this.products
       const productKey = this.productKey
       const productTable = []
-      products.forEach(item=>{
+      products.forEach(item => {
         const val = productKey.includes(item.id)
-        if(val){
-            productTable.push(item)
+        if (val) {
+          productTable.push(item)
         }
       })
       this.productValue = productTable
       this.showDialog = false
     },
     /**
-     * 获取head图片url
+     * 图片url
      */
-    async getHeadImgPath(path) {
-      const res = await img.addImage(path)
-      this.form.head_img_id = res.result.imgId
-    },
-    /**
-     * 获取topic图片url
-     */
-    async getTopicImgPath(path) {
-      const res = await img.addImage(path)
-      this.form.topic_img_id = res.result.imgId
+    async uploadImage(file) {
+      // 调用自定义图片上传的接口
+      const res = await img.imageUpload(file)
+      for (let i = 0; i < res.length; i++) {
+        // 固定用法，返回一个promise
+        return Promise.resolve({
+          id: res[i].id,
+          url: res[i].url,
+        })
+      }
     },
     /**
      * 提交表单
      */
     async submitForm(formName) {
+      const img1 = await this.$refs.uploadEle1.getValue()
+      const img2 = await this.$refs.uploadEle2.getValue()
+      if (img1.length > 0 && img2.length > 0) {
+        this.form.topic_img_id = img1[0].id
+        this.form.head_img_id = img2[0].id
+      }
       try {
         const res = await theme.editTheme(this.id, this.form)
+        await this.updateProduct()
         if (res.error_code === 0) {
           this.$message.success(`${res.msg}`)
           this.back()
@@ -209,18 +217,50 @@ export default {
         })
       }
     },
+    async updateProduct() {
+      let addProduct = []
+      let delProduct = []
+      if (JSON.stringify(this.productKey) !== JSON.stringify(this.productByIds)) {
+        addProduct = this._processAddArray(this.productKey)
+        if (addProduct.length > 0) {
+          const productByIdsobj = {products:addProduct.map(item=>parseInt(item))}
+          await theme.addRelProduct(this.id,productByIdsobj)
+        }
+        delProduct = this._processDelArray(this.productKey)
+        if(delProduct.length> 0){
+          const productByIdsobj = {products:delProduct.map(item=>parseInt(item))}
+          await theme.delRelProduct(this.id,productByIdsobj)
+        }
+      }
+    },
+    //删除关联商品
+    _processDelArray(productKey) {
+      // 如果原bannerItem被删除了，那么在表单数据里面肯定是找不到的
+      // find()函数在找不到条件的结果时会返回一个undefined
+      return this.productByIds.filter(item => {
+        const res = productKey.find(items => item === items)
+        return typeof res === 'undefined'
+      })
+    },
+    //处理增加关联商品
+    _processAddArray(productKey) {
+      return productKey.filter(item =>{
+        const res = this.productByIds.find(items => items != item)
+        return res
+      })
+    },
     back() {
       this.$emit('editClose')
     },
-  }
+  },
 }
 </script>
 <style lang="scss" scoped>
 @import './../../../assets/styles/title.scss';
 @import './../../../assets/styles/realize/mixin.scss';
 .container {
-  .title{
-    @include bottom-line()
+  .title {
+    @include bottom-line();
   }
   .wrap {
     padding: 20px;

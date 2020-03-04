@@ -156,6 +156,7 @@ export default {
         this.loading = false
         this.showPage = true
       } catch (e) {
+        console.log(e)
         this.recordList = []
         this.page = 0
         this.total_nums = 0

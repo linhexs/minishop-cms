@@ -52,8 +52,16 @@ class Theme {
    * @param {]} id 
    * @param {*} ids 
    */
-  async getThemeById(id,ids){
+  async getThemeById(id){
     const res = await get(`v1/theme/${id}`)
+    return res
+  }
+  async addRelProduct(id,obj){
+    const res = await post(`v1/theme/product/${id}`,obj,{handleError: true})
+    return res
+  }
+  async delRelProduct(id,obj){
+    const res = await _delete(`v1/theme/product/${id}`,obj,{handleError: true})
     return res
   }
 }

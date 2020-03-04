@@ -4,11 +4,18 @@
     <div class="wrap">
       <el-row>
         <el-col :lg="16">
-          <el-form :model="form" status-icon ref="form" label-width="100px" @submit.native.prevent>
-            <el-form-item label="名称">
+          <el-form
+            :model="form"
+            :rules="rules"
+            status-icon
+            ref="form"
+            label-width="100px"
+            @submit.native.prevent
+          >
+            <el-form-item label="名称" prop="name">
               <el-input placeholder="请输入主题名称" size="medium" v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="简介">
+            <el-form-item label="简介" prop="description">
               <el-input
                 type="textarea"
                 placeholder="请输入主题简介"
@@ -17,10 +24,20 @@
               ></el-input>
             </el-form-item>
             <el-form-item label="主题图">
-              <upload-imgs ref="uploadEle3" :multiple="true" :max-num="1" @func="getTopicImgPath" />
+              <upload-imgs
+                ref="uploadEle1"
+                :multiple="true"
+                :max-num="1"
+                :remote-fuc="uploadImage"
+              />
             </el-form-item>
             <el-form-item label="详情页头图">
-              <upload-imgs ref="uploadEle3" :multiple="true" :max-num="1" @func="getHeadImgPath" />
+              <upload-imgs
+                ref="uploadEle2"
+                :multiple="true"
+                :max-num="1"
+                :remote-fuc="uploadImage"
+              />
             </el-form-item>
           </el-form>
           <div class="product-title">关联商品</div>
@@ -88,6 +105,22 @@ export default {
       filterMethod(query, item) {
         return item.product.indexOf(query) > -1
       },
+      rules: {
+        name: [
+          {
+            required: true,
+            message: '请输入主题名称',
+            trigger: 'blur',
+          },
+        ],
+        description: [
+          {
+            required: true,
+            message: '请输入主题简介',
+            trigger: 'blur',
+          },
+        ],
+      },
     }
   },
   methods: {
@@ -122,40 +155,52 @@ export default {
       this.showDialog = false
     },
     /**
-     * 获取head图片url
+     * 获取图片
      */
-    async getHeadImgPath(path) {
-      const res = await img.addImage(path)
-      this.form.head_img_id = res.result.imgId
-    },
-    /**
-     * 获取topic图片url
-     */
-    async getTopicImgPath(path) {
-      const res = await img.addImage(path)
-      this.form.topic_img_id = res.result.imgId
+    async uploadImage(file) {
+      // 调用自定义图片上传的接口
+      const res = await img.imageUpload(file)
+      for (let i = 0; i < res.length; i++) {
+        // 固定用法，返回一个promise
+        return Promise.resolve({
+          id: res[i].id,
+          url: res[i].url,
+        })
+      }
     },
     /**
      * 提交表单
      */
     async submitForm(formName) {
-      try {
-        const res = await theme.addTheme(this.form)
-        var ids = []
-        this.productValue.forEach((value, key) => {
-          ids.push(value.id)
-        })
-        if (res.error_code === 0) {
-          await theme.addRelProduct(res.result.id, { products: ids })
-          this.$message.success(`${res.msg}`)
-          this.$router.push('/theme/list')
-        }
-      } catch (e) {
-        this.$message({
-          message: error(e.data.msg),
-          type: 'error',
-        })
+      const img1 = await this.$refs.uploadEle1.getValue()
+      const img2 = await this.$refs.uploadEle2.getValue()
+      if (img1.length > 0 && img2.length > 0) {
+        this.form.topic_img_id = img1[0].imgId
+        this.form.head_img_id = img2[0].imgId
       }
+      this.$refs.form.validate(async valid => {
+        if (valid) {
+          try {
+            const res = await theme.addTheme(this.form)
+            var ids = []
+            this.productValue.forEach((value, key) => {
+              ids.push(value.id)
+            })
+            if (res.error_code === 0) {
+              await theme.addRelProduct(res.result.id, { products: ids })
+              this.$message.success(`${res.msg}`)
+              this.$router.push('/theme/list')
+            }
+          } catch (e) {
+            this.$message({
+              message: error(e.data.msg),
+              type: 'error',
+            })
+          }
+        } else {
+          this.$message.error('信息不完整')
+        }
+      })
     },
   },
 }
@@ -164,8 +209,8 @@ export default {
 @import './../../../assets/styles/title.scss';
 @import './../../../assets/styles/realize/mixin.scss';
 .container {
-  .title{
-    @include bottom-line()
+  .title {
+    @include bottom-line();
   }
   .wrap {
     padding: 20px;

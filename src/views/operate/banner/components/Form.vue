@@ -233,8 +233,8 @@ export default {
           url: res[i].url,
         })
       }
-    },
-  },
+    }
+  }
 }
 </script>
 

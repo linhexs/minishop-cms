@@ -68,7 +68,7 @@
           </el-dialog>
           <div class="save-theme-btn">
             <el-button type="primary" @click="submitForm('form')">保存</el-button>
-            <el-button>重置</el-button>
+            <el-button @click="back">取消</el-button>
           </div>
         </el-col>
       </el-row>
@@ -189,7 +189,7 @@ export default {
             if (res.error_code === 0) {
               await theme.addRelProduct(res.result.id, { products: ids })
               this.$message.success(`${res.msg}`)
-              this.$router.push('/theme/list')
+             this.back()
             }
           } catch (e) {
             this.$message({
@@ -202,7 +202,10 @@ export default {
         }
       })
     },
-  },
+    back(){
+      this.$router.push('/theme/list')
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

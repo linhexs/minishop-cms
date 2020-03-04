@@ -26,7 +26,13 @@
         <el-table-column label="操作" fixed="right" width="170">
           <!-- <el-table-column>标签支持在标签内嵌套一个<template>标签实现复杂的页面元素 -->
           <template slot-scope="scope">
-            <el-button plain size="mini" type="primary" @click="handleEdit(scope.row)"  v-auth="'编辑主题'">编辑</el-button>
+            <el-button
+              plain
+              size="mini"
+              type="primary"
+              @click="handleEdit(scope.row)"
+              v-auth="'编辑主题'"
+            >编辑</el-button>
             <el-button
               plain
               size="mini"
@@ -116,6 +122,9 @@ export default {
 <style lang="scss" scoped>
 @import './../../../assets/styles/title.scss';
 .container {
+  .title {
+    @include bottom-line();
+  }
   .table-container {
     margin-top: 30px;
     margin-bottom: 30px;

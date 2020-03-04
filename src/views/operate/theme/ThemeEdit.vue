@@ -69,7 +69,7 @@
           </el-dialog>
           <div class="save-theme-btn">
             <el-button type="primary" @click="submitForm('form')">保存</el-button>
-            <el-button>重置</el-button>
+            <el-button @click="back">取消</el-button>
           </div>
         </el-col>
       </el-row>
@@ -223,13 +223,13 @@ export default {
       if (JSON.stringify(this.productKey) !== JSON.stringify(this.productByIds)) {
         addProduct = this._processAddArray(this.productKey)
         if (addProduct.length > 0) {
-          const productByIdsobj = {products:addProduct.map(item=>parseInt(item))}
-          await theme.addRelProduct(this.id,productByIdsobj)
+          const productByIdsobj = { products: addProduct.map(item => parseInt(item)) }
+          await theme.addRelProduct(this.id, productByIdsobj)
         }
         delProduct = this._processDelArray(this.productKey)
-        if(delProduct.length> 0){
-          const productByIdsobj = {products:delProduct.map(item=>parseInt(item))}
-          await theme.delRelProduct(this.id,productByIdsobj)
+        if (delProduct.length > 0) {
+          const productByIdsobj = { products: delProduct.map(item => parseInt(item)) }
+          await theme.delRelProduct(this.id, productByIdsobj)
         }
       }
     },
@@ -244,7 +244,7 @@ export default {
     },
     //处理增加关联商品
     _processAddArray(productKey) {
-      return productKey.filter(item =>{
+      return productKey.filter(item => {
         const res = this.productByIds.find(items => items != item)
         return res
       })

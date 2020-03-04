@@ -51,7 +51,7 @@
             </ul>
           </div>
           <div class="team-icon">
-            <!-- <img src="../../assets/img/about/qrcode.jpg" alt /> -->
+            <img src="/static/img/wxcode.jpg" alt />
           </div>
           <p class="team-label">扫码体验小程序</p>
         </div>
@@ -80,39 +80,48 @@
 
 <script>
 import about from './../../models/about'
-import {nowDate,lastMonthDate,weekDate} from './../../common/date'
+import { nowDate, lastMonthDate, weekDate } from './../../common/date'
 export default {
   data() {
-    this.chartSettings = {
+    ;(this.chartSettings = {
+      labelMap: {
+        count: '订单量',
+        total_price: '订单额',
+      },
+    }),
+      (this.chartMemberSettings = {
         labelMap: {
-          'count': '订单量',
-          'total_price': '订单额'
+          count: '会员',
+          total_price: '订单额',
         },
-    },
-    this.chartMemberSettings = {
-        labelMap: {
-          'count': '会员',
-          'total_price': '订单额'
-        },
-      }
-    this.colors = ['#c23531','#2f4554', '#61a0a8',
-        '#d48265', '#91c7ae','#749f83', 
-        '#ca8622', '#bda29a','#6e7074',
-        '#546570', '#c4ccd3']
+      })
+    this.colors = [
+      '#c23531',
+      '#2f4554',
+      '#61a0a8',
+      '#d48265',
+      '#91c7ae',
+      '#749f83',
+      '#ca8622',
+      '#bda29a',
+      '#6e7074',
+      '#546570',
+      '#c4ccd3',
+    ]
     return {
       activeName: 'first',
       showTeam: false,
       chartData: {
-          columns: ['date', 'count', 'total_price'],
-          rows:[]
-        },
-    chartMemberData:{
-      columns: ['date', 'count'],
-          rows: []
-        }
+        columns: ['date', 'count', 'total_price'],
+        rows: [],
+      },
+      chartMemberData: {
+        columns: ['date', 'count'],
+        rows: [],
+      },
     }
   },
-  created(){
+  created() {
     this.getData()
   },
   mounted() {
@@ -124,25 +133,25 @@ export default {
     handleArticle(link) {
       window.open(link)
     },
-    async getData(){
+    async getData() {
       const nDate = nowDate()
       const lDate = lastMonthDate()
       const wDate = weekDate()
       const lastMonthDataObj = {
-        start:lDate,
-        end:nDate,
-        type:'day'
+        start: lDate,
+        end: nDate,
+        type: 'day',
       }
-      const weekDataObj={
-        start:wDate,
-        end:nDate,
-        type:'day'
+      const weekDataObj = {
+        start: wDate,
+        end: nDate,
+        type: 'day',
       }
       const res = await about.getData(lastMonthDataObj)
-      this.chartData.rows =  res.slice(1,32)
+      this.chartData.rows = res.slice(1, 32)
       const resByMember = await about.getMemberData(weekDataObj)
-      this.chartMemberData.rows =  resByMember 
-    }
+      this.chartMemberData.rows = resByMember
+    },
   },
 }
 </script>
@@ -286,10 +295,9 @@ export default {
           align-items: center;
           background-color: #fff;
           box-shadow: 0 0 10px 0 #cfd5e3;
-
           img {
-            width: 62px;
-            height: 62px;
+            width: 82px;
+            height: 82px;
           }
         }
         .team-label {

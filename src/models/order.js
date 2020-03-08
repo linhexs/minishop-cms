@@ -6,7 +6,7 @@ class order {
    */
   async getOrder(page, count, input, searchDate) {
     if (searchDate.length > 1) {
-      const res = await get('v1/order', { page, count, start: searchDate[0], end: searchDate[1] })
+      const res = await get('v1/order', { page, count, start: searchDate[0], end: searchDate[1],handleError: true})
       return res
     }
     if (input !== '') {

@@ -106,7 +106,14 @@ export default {
      * 获取分类列表
      */
     async getCategory() {
-      this.categoryList = await product.getCategory()
+      try{
+        this.categoryList = await product.getCategory()
+      }catch(e){
+        this.$message({
+          message: e.data.msg,
+          type: 'error',
+        })
+      }
       ;(this.addVisible = false), (this.editVisible = false), (this.loading = false)
     },
     /**
@@ -124,7 +131,6 @@ export default {
       this.loading = true
       try {
         const res = await product.delCategoryByIds([this.id])
-        this.getCategory()
         this.$message({
           message: res.msg,
           type: 'success',
@@ -135,6 +141,7 @@ export default {
           type: 'error',
         })
       }
+      this.getCategory()
     },
     editClose() {
       ;(this.loading = true), (this.editForm = false)

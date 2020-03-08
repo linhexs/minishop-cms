@@ -68,7 +68,7 @@
       </div>
       <div class="personal">
         <div class="el-card__header">
-          <span>最近一周会员增长趋势</span>
+          <span>最近一个月会员增长趋势</span>
         </div>
         <div class="el-card__body">
           <ve-histogram :data="chartMemberData" :settings="chartMemberSettings"></ve-histogram>
@@ -142,15 +142,10 @@ export default {
         end: nDate,
         type: 'day',
       }
-      const weekDataObj = {
-        start: wDate,
-        end: nDate,
-        type: 'day',
-      }
       const res = await about.getData(lastMonthDataObj)
       this.chartData.rows = res.slice(1, 32)
-      const resByMember = await about.getMemberData(weekDataObj)
-      this.chartMemberData.rows = resByMember
+      const resByMember = await about.getMemberData(lastMonthDataObj)
+      this.chartMemberData.rows = resByMember.slice(1, 32)
     },
   },
 }

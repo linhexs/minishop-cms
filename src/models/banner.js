@@ -6,7 +6,7 @@ class Banner {
    * 获取banner列表
    */
   async getBanners() {
-    const res = await get('v1/banner')
+    const res = await get('v1/banner',{handleError: true})
     return res
   }
 /**
@@ -31,7 +31,7 @@ class Banner {
     const res = await patch(`v1/banner/${id}`, {
       name,
       description,
-    }, { handleError: this.handleError })
+    }, { handleError: true })
     return res
   }
 
@@ -39,7 +39,7 @@ class Banner {
    * 新增轮播图元素
    */
   async addBannerItems(items) {
-    const res = await post('v1/banner/item', { items }, { handleError: this.handleError })
+    const res = await post('v1/banner/item', { items }, { handleError: true })
     return res
   }
 
@@ -47,7 +47,7 @@ class Banner {
    * 删除轮播图元素
    */
   async delBannerItems(ids) {
-    const res = await _delete('v1/banner/item', { ids }, { handleError: this.handleError })
+    const res = await _delete('v1/banner/item', { ids }, { handleError: true })
     return res
   }
 
@@ -55,7 +55,7 @@ class Banner {
    * 编辑轮播图元素
    */
   async editBannerItems(items) {
-    const res = await put('v1/banner/item', { items }, { handleError: this.handleError })
+    const res = await put('v1/banner/item', { items }, { handleError:true })
     return res
   }
 }

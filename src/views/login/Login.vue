@@ -1,6 +1,9 @@
 <template>
+
   <div class="login">
-  <!-- <div class="team-name hidden-sm-and-down"><img src="@/assets/img/login/team-name.png" alt="logo" /></div> -->
+  <div class="team-name hidden-sm-and-down">
+    <img src="/static/img/wxcode.jpg" alt="logo" />
+    </div>
     <div class="form-box" v-loading="loading" element-loading-background="rgba(0, 0, 0, 0)">
       <div class="title"><h1 title="Lin">微信小程序商城 CMS</h1></div>
       <form class="login-form" autocomplete="off" @submit.prevent="throttleLogin()">
@@ -14,6 +17,10 @@
         </div>
         <button class="submit-btn" type="submit">登录</button>
       </form>
+    </div>
+          <div class="cms-word">
+              <h3>使用微信扫描二维码，体验小程序</h3>
+          <h3>此程序包含电商内容所以个人微信小程序无法通过审核，请联系管理员获取体验权限！</h3>
     </div>
   </div>
 </template>
@@ -98,13 +105,26 @@ export default {
   height: 100%;
   background-size: auto;
   background: #1b2c5f url('../../assets/img/login/login-ba.png') no-repeat center center;
-
+  .cms-word{
+    position: fixed;
+    left: 50%;
+    transform:translate(-50%);
+    bottom: 10%;
+    color:#fff;
+     h3{
+      margin-bottom:20px;
+    }
+  }
   .team-name {
     position: fixed;
     left: 40px;
     top: 50%;
-    width: 50px;
+    width: 90px;
     transform: translateY(-50%);
+    h3{
+      margin-top:20px;
+      color:#fff;
+    }
   }
 
   .form-box {
@@ -113,7 +133,6 @@ export default {
     top: 50%;
     transform: translate(-50%, -50%);
     width: 445px;
-
     .title {
       height: 37px;
       font-size: 30px;

@@ -5,7 +5,7 @@ class Theme {
    * 获取主题信息
    */
   async getThemes() {
-    const res = await get('v1/theme')
+    const res = await get('v1/theme',{handleError: true})
     return res
   }
   /**
@@ -14,14 +14,14 @@ class Theme {
    */
   async delThemeByIds(ids) {
     // { ids } 等价于 { ids : ids }，对象的key和value命名相同时的一种简写
-    const res = await _delete('v1/theme', { ids }, { handleError: this.handleError })
+    const res = await _delete('v1/theme', { ids,handleError: true} )
     return res
   }
   /**
    * 获取可用商品信息
    */
   async getProducts(){
-    const res = await get('v1/product')
+    const res = await get('v1/product',{handleError: true})
     return res
   }
   /**
@@ -37,7 +37,7 @@ class Theme {
    * @param {*} obj 
    */
   async addRelProduct(id,ids){
-    const res = await post(`v1/theme/product/${id}`,ids)
+    const res = await post(`v1/theme/product/${id}`,ids,{handleError: true})
     return res
   }
   /**
@@ -53,7 +53,7 @@ class Theme {
    * @param {*} ids 
    */
   async getThemeById(id){
-    const res = await get(`v1/theme/${id}`)
+    const res = await get(`v1/theme/${id}`,{handleError: true})
     return res
   }
   async addRelProduct(id,obj){

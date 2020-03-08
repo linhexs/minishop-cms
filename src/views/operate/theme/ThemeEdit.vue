@@ -199,9 +199,11 @@ export default {
     async submitForm(formName) {
       const img1 = await this.$refs.uploadEle1.getValue()
       const img2 = await this.$refs.uploadEle2.getValue()
-      if (img1.length > 0 && img2.length > 0) {
-        this.form.topic_img_id = img1[0].id
-        this.form.head_img_id = img2[0].id
+      if (img1.length >0 && img1[0].imgId  != null) {
+        this.form.topic_img_id = img1[0].imgId
+      }
+      if (img2.length>0 &&img2[0].imgId  != null) {
+        this.form.head_img_id = img2[0].imgId
       }
       try {
         const res = await theme.editTheme(this.id, this.form)
@@ -244,8 +246,11 @@ export default {
     },
     //处理增加关联商品
     _processAddArray(productKey) {
+      if(this.productByIds.length === 0){
+        return productKey;
+      }
       return productKey.filter(item => {
-        const res = this.productByIds.find(items => items != item)
+        const res = this.productByIds.find(items => item != items)
         return res
       })
     },

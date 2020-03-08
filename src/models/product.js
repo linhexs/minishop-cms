@@ -4,7 +4,7 @@ class Product {
    * 获取分类信息
    */
     async getCategory() {
-      const res = await get('v1/category')
+      const res = await get('v1/category',{handleError: true})
       return res
     }
     /**
@@ -52,7 +52,7 @@ class Product {
      * 修改商品状态
      */
     async modifyStatus(ids){
-      const res = await patch(`v1/product/${ids}`)
+      const res = await patch(`v1/product/${ids}`,{handleError: true})
       return res
     }
     /**

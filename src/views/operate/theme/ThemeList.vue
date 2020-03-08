@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     async getThemes() {
-      this.themeList = await theme.getThemes()
+        this.themeList = await theme.getThemes()
       this.loading = false
     },
     handleDel(id) {
